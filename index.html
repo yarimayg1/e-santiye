@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ana Sayfa - E-Şantiye</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🏗️ E-ŞANTİYE</h1>
+            <nav class="navbar">
+                <a href="index.html" class="active"><i class="fas fa-home"></i> Ana Sayfa</a>
+                <a href="projects.html"><i class="fas fa-project-diagram"></i> Proje Yönetimi</a>
+                <a href="materials.html"><i class="fas fa-boxes"></i> Malzeme Yönetimi</a>
+                <a href="personnel.html"><i class="fas fa-users"></i> Personel Yönetimi</a>
+                <a href="safety.html"><i class="fas fa-shield-alt"></i> İş Güvenliği</a>
+                <a href="ai-assistant.html"><i class="fas fa-robot"></i> AI Asistan</a>
+                <a href="#" id="logoutBtn" style="margin-left: auto;"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <div class="welcome-section">
+                <h2>Hoş Geldiniz, <span id="userName" class="username"></span>! 👋</h2>
+                <p class="welcome-text">E-Şantiye sisteminde bugün neler yapmak istiyorsunuz?</p>
+            </div>
+            
+            <!-- İstatistik Kartları -->
+            <div class="dashboard-grid">
+                <div class="stats-card">
+                    <div class="stats-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3>Toplam Proje</h3>
+                        <div class="stats-number" id="totalProjects">0</div>
+                        <div class="stats-detail">
+                            <span class="active-projects">Aktif: <span id="activeProjectsCount">0</span></span>
+                            <span class="completed-projects">Tamamlanan: <span id="completedProjectsCount">0</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stats-icon budget">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3>Toplam Bütçe</h3>
+                        <div class="stats-number">₺<span id="totalBudget">0</span>M</div>
+                        <div class="stats-detail">
+                            <span class="spent-budget">Harcanan: ₺<span id="spentBudget">0</span>M</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stats-icon progress">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3>Ortalama İlerleme</h3>
+                        <div class="stats-number">%<span id="averageProgress">0</span></div>
+                        <div class="stats-detail">
+                            <span class="last-week">Geçen hafta: %<span id="lastWeekProgress">0</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stats-icon warning">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3>AI Tahmini</h3>
+                        <div class="stats-number"><span id="aiEstimate">0</span> Gün</div>
+                        <div class="stats-detail">
+                            <span class="delay-warning">Tahmini gecikme</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hızlı Erişim Butonları -->
+            <div class="quick-actions">
+                <h3>🚀 Hızlı Erişim</h3>
+                <div class="action-buttons-grid">
+                    <button class="action-btn primary" onclick="window.location.href='projects.html'">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Yeni Proje</span>
+                    </button>
+                    <button class="action-btn success" onclick="window.location.href='materials.html'">
+                        <i class="fas fa-box-open"></i>
+                        <span>Malzeme Ekle</span>
+                    </button>
+                    <button class="action-btn info" onclick="window.location.href='personnel.html'">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Personel Ekle</span>
+                    </button>
+                    <button class="action-btn warning" onclick="window.location.href='safety.html'">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>Güvenlik Kontrolü</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Son Projeler -->
+            <div class="recent-section">
+                <div class="section-header">
+                    <h3>📈 Son Projeler</h3>
+                    <a href="projects.html" class="view-all">Tümünü Gör <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div id="recentProjects" class="projects-grid">
+                    <!-- Dinamik olarak projeler eklenecek -->
+                </div>
+            </div>
+
+            <!-- Sistem Bildirimleri -->
+            <div class="notifications-section">
+                <div class="section-header">
+                    <h3>🔔 Sistem Bildirimleri</h3>
+                </div>
+                <div class="notifications-list">
+                    <div class="notification-item success">
+                        <i class="fas fa-check-circle"></i>
+                        <div class="notification-content">
+                            <strong>Sistem güncel</strong>
+                            <span>Tüm modüller sorunsuz çalışıyor</span>
+                        </div>
+                    </div>
+                    <div class="notification-item warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div class="notification-content">
+                            <strong>Kritik stok uyarısı</strong>
+                            <span>3 malzemede stok seviyesi düşük</span>
+                        </div>
+                    </div>
+                    <div class="notification-item info">
+                        <i class="fas fa-info-circle"></i>
+                        <div class="notification-content">
+                            <strong>Yeni güncelleme</strong>
+                            <span>AI Asistan özellikleri eklendi</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 E-Şantiye İnşaat Yönetim Sistemi. Tüm hakları saklıdır.</p>
+        </footer>
+    </div>
+
+    <style>
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 15px;
+            color: white;
+        }
+
+        .welcome-section h2 {
+            margin-bottom: 0.5rem;
+            font-size: 2.2rem;
+        }
+
+        .username {
+            color: #ffd700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .welcome-text {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .quick-actions {
+            margin: 3rem 0;
+        }
+
+        .quick-actions h3 {
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        .action-buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+        }
+
+        .action-btn.primary { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .action-btn.success { background: linear-gradient(135deg, #28a745, #20c997); }
+        .action-btn.info { background: linear-gradient(135deg, #17a2b8, #6f42c1); }
+        .action-btn.warning { background: linear-gradient(135deg, #ffc107, #fd7e14); }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .action-btn i {
+            font-size: 1.5rem;
+        }
+
+        .recent-section, .notifications-section {
+            margin: 3rem 0;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h3 {
+            color: #333;
+            margin: 0;
+        }
+
+        .view-all {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .view-all:hover {
+            color: #764ba2;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .project-mini-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .project-mini-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .project-mini-card h4 {
+            margin: 0 0 1rem 0;
+            color: #333;
+        }
+
+        .project-mini-card .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .project-mini-card .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+        }
+
+        .project-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .notifications-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .notification-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .notification-item.success {
+            border-left: 4px solid #28a745;
+        }
+
+        .notification-item.warning {
+            border-left: 4px solid #ffc107;
+        }
+
+        .notification-item.info {
+            border-left: 4px solid #17a2b8;
+        }
+
+        .notification-item i {
+            font-size: 1.2rem;
+        }
+
+        .notification-item.success i { color: #28a745; }
+        .notification-item.warning i { color: #ffc107; }
+        .notification-item.info i { color: #17a2b8; }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-content strong {
+            display: block;
+            margin-bottom: 0.2rem;
+            color: #333;
+        }
+
+        .notification-content span {
+            color: #666;
+            font-size: 0.9rem;
+        }
+    </style>
+
+    <script>
+        // Kullanıcı kontrolü
+        if (localStorage.getItem('loggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+
+        document.getElementById('userName').textContent = localStorage.getItem('username') || 'Kullanıcı';
+        
+        // İstatistikleri yükle
+        function loadStatistics() {
+            const projects = JSON.parse(localStorage.getItem('projects')) || [];
+            const personnel = JSON.parse(localStorage.getItem('personnel')) || [];
+            const materials = JSON.parse(localStorage.getItem('materials')) || [];
+            
+            // Proje istatistikleri
+            const totalProjects = projects.length;
+            const activeProjects = projects.filter(p => p.status === 'active').length;
+            const completedProjects = projects.filter(p => p.status === 'completed').length;
+            
+            const totalBudget = projects.reduce((sum, project) => sum + project.budget, 0) / 1000000;
+            const spentBudget = projects.reduce((sum, project) => sum + (project.budget * project.progress / 100), 0) / 1000000;
+            
+            const averageProgress = projects.length > 0 ? 
+                Math.round(projects.reduce((sum, project) => sum + project.progress, 0) / projects.length) : 0;
+
+            // İstatistikleri güncelle
+            document.getElementById('totalProjects').textContent = totalProjects;
+            document.getElementById('activeProjectsCount').textContent = activeProjects;
+            document.getElementById('completedProjectsCount').textContent = completedProjects;
+            document.getElementById('totalBudget').textContent = totalBudget.toFixed(1);
+            document.getElementById('spentBudget').textContent = spentBudget.toFixed(1);
+            document.getElementById('averageProgress').textContent = averageProgress;
+            document.getElementById('lastWeekProgress').textContent = Math.max(0, averageProgress - 6);
+            
+            // Basit AI tahmini
+            const delayedProjects = projects.filter(p => p.progress < (p.duration / 7)).length;
+            document.getElementById('aiEstimate').textContent = delayedProjects * 3;
+            
+            // Son projeleri göster
+            const recentProjects = projects.slice(-4).reverse();
+            const projectsContainer = document.getElementById('recentProjects');
+            projectsContainer.innerHTML = recentProjects.map(project => `
+                <div class="project-mini-card">
+                    <h4>${project.name}</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${project.progress}%"></div>
+                    </div>
+                    <div class="project-info">
+                        <span>İlerleme: %${project.progress}</span>
+                        <span>${project.status === 'active' ? 'Aktif' : 'Tamamlandı'}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Çıkış butonu
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            localStorage.removeItem('loggedIn');
+            localStorage.removeItem('username');
+            window.location.href = 'login.html';
+        });
+        
+        // Sayfa yüklendiğinde istatistikleri yükle
+        document.addEventListener('DOMContentLoaded', loadStatistics);
+    </script>
+</body>
+</html>

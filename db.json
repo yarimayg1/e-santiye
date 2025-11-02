@@ -1,0 +1,39 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "test",
+      "password": "test"
+    }
+  ],
+  "projects": [
+    {
+      "id": 1,
+      "name": "Örnek Villa Projesi",
+      "budget": 500000,
+      "duration": 180,
+      "progress": 35,
+      "status": "active",
+      "location": "İstanbul",
+      "type": "konut",
+      "priority": "yüksek",
+      "start_date": "2024-01-15"
+    }
+  ],
+  "dashboard-stats": {
+    "projects": {
+      "total": 8,
+      "active": 5,
+      "completed": 3,
+      "total_budget": 5250000,
+      "avg_progress": 62
+    },
+    "personnel": {
+      "total": 47
+    },
+    "materials": {
+      "total": 189,
+      "critical": 12
+    }
+  }
+}

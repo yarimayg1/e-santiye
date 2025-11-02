@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malzeme Yönetimi - E-Şantiye</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🏗️ E-ŞANTİYE</h1>
+            <nav class="navbar">
+                <a href="index.html"><i class="fas fa-home"></i> Ana Sayfa</a>
+                <a href="projects.html"><i class="fas fa-project-diagram"></i> Proje Yönetimi</a>
+                <a href="materials.html" class="active"><i class="fas fa-boxes"></i> Malzeme Yönetimi</a>
+                <a href="personnel.html"><i class="fas fa-users"></i> Personel Yönetimi</a>
+                <a href="safety.html"><i class="fas fa-shield-alt"></i> İş Güvenliği</a>
+                <a href="ai-assistant.html"><i class="fas fa-robot"></i> AI Asistan</a>
+                <a href="#" id="logoutBtn" style="margin-left: auto;"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <div class="page-header">
+                <div class="header-content">
+                    <h2><i class="fas fa-boxes"></i> Malzeme Yönetimi</h2>
+                    <p>Tüm şantiye stoklarını, fiyatlarını ve tedarikçilerini yönetin</p>
+                </div>
+                <button class="btn btn-primary" id="addMaterialBtn">
+                    <i class="fas fa-plus"></i> Yeni Malzeme Ekle
+                </button>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="stats-card">
+                    <div class="stats-icon">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3>Toplam Malzeme Çeşidi</h3>
+                        <div class="stats-number" id="totalMaterialCount">0</div>
+                        <div class="stats-detail">
+                            <span class="active-projects">Farklı stok kodu</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stats-icon progress">
+                        <i class="fas fa-cubes"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3>Toplam Stok Miktarı</h3>
+                        <div class="stats-number" id="totalStockCount">0</div>
+                        <div class="stats-detail">
+                            <span class="spent-budget">Tüm şantiyeler</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stats-icon warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3>Kritik Stok Uyarısı</h3>
+                        <div class="stats-number" id="criticalStockCount">0</div>
+                        <div class="stats-detail">
+                            <span class="delay-warning">Acil sipariş sayısı</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stats-icon budget">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3>Ortalama Birim Fiyat</h3>
+                        <div class="stats-number">₺<span id="avgUnitPrice">0.00</span></div>
+                        <div class="stats-detail">
+                            <span class="spent-budget">Son güncelleme</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="data-section">
+                <div class="search-bar">
+                    <input type="text" id="materialSearch" placeholder="Malzeme, tedarikçi veya kategori ara...">
+                    <button><i class="fas fa-search"></i></button>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>Malzeme Adı</th>
+                                <th>Kategori</th>
+                                <th>Birim</th>
+                                <th>Stok Miktarı</th>
+                                <th>Min. Stok</th>
+                                <th>Birim Fiyatı</th>
+                                <th>Tedarikçi</th>
+                                <th class="action-column">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="materialTableBody">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 E-Şantiye İnşaat Yönetim Sistemi. Tüm hakları saklıdır.</p>
+        </footer>
+    </div>
+
+    <div id="materialModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle"><i class="fas fa-plus"></i> Yeni Malzeme Ekle</h3>
+                <button class="close">&times;</button>
+            </div>
+            <form id="materialForm">
+                <input type="hidden" id="materialId">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="materialName"><i class="fas fa-wrench"></i> Malzeme Adı</label>
+                        <input type="text" id="materialName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="category"><i class="fas fa-tags"></i> Kategori</label>
+                        <select id="category" class="form-control" required>
+                            <option value="Hammadde">Hammadde</option>
+                            <option value="İşlenmiş">İşlenmiş Ürün</option>
+                            <option value="Tesisat">Tesisat</option>
+                            <option value="Elektrik">Elektrik</option>
+                            <option value="Kabaİnşaat">Kaba İnşaat</option>
+                            <option value="İnceİnşaat">İnce İnşaat</option>
+                            <option value="Ekipman">Ekipman</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="unit"><i class="fas fa-balance-scale"></i> Birim</label>
+                        <select id="unit" class="form-control" required>
+                            <option value="Adet">Adet</option>
+                            <option value="m">Metre (m)</option>
+                            <option value="m2">Metrekare (m²)</option>
+                            <option value="m3">Metreküp (m³)</option>
+                            <option value="kg">Kilogram (kg)</option>
+                            <option value="ton">Ton</option>
+                            <option value="Litre">Litre</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="stockQuantity"><i class="fas fa-cubes"></i> Stok Miktarı</label>
+                        <input type="number" id="stockQuantity" class="form-control" min="0" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="minStock"><i class="fas fa-bell"></i> Min. Stok Seviyesi</label>
+                        <input type="number" id="minStock" class="form-control" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="unitPrice"><i class="fas fa-lira-sign"></i> Birim Fiyatı (₺)</label>
+                        <input type="number" id="unitPrice" class="form-control" min="0" step="0.01">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="supplier"><i class="fas fa-truck"></i> Tedarikçi</label>
+                    <input type="text" id="supplier" class="form-control">
+                </div>
+                
+                <div class="form-group">
+                    <label for="description"><i class="fas fa-info-circle"></i> Açıklama</label>
+                    <textarea id="description" class="form-control" rows="2"></textarea>
+                </div>
+
+                <div class="action-buttons">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Kaydet
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">
+                        <i class="fas fa-times"></i> İptal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        /* Genel Tablo Stili */
+        .data-section {
+            margin-top: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden; 
+        }
+
+        .table-container {
+            overflow-x: auto; 
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        /* Başlık (Header) Satırı */
+        .data-table thead tr {
+            background-color: #f4f7f9; 
+            color: #34495e; 
+            border-bottom: 2px solid #ecf0f1;
+            font-size: 0.95rem;
+        }
+
+        .data-table th {
+            padding: 15px 20px;
+            text-align: left;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Veri Satırları */
+        .data-table tbody tr {
+            border-bottom: 1px solid #ecf0f1;
+            transition: background-color 0.2s;
+        }
+
+        .data-table tbody tr:hover {
+            background-color: #f8f9fa; 
+        }
+
+        .data-table td {
+            padding: 12px 20px;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        /* Kritik Stok Uyarısı */
+        .data-table .critical-row {
+            background-color: #fff0f0; 
+            border-left: 5px solid #e74c3c; 
+            font-weight: 600;
+        }
+
+        .data-table .critical-row:hover {
+            background-color: #ffe8e8; 
+        }
+
+        .data-table .critical-stock {
+            color: #e74c3c; 
+            font-weight: 700;
+        }
+
+        /* İşlemler Sütunu */
+        .action-column {
+            width: 120px; 
+            text-align: center;
+        }
+
+        .action-btn {
+            padding: 8px 12px;
+            margin-left: 5px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .action-btn.edit {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .action-btn.delete {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        /* İstatistik Kartları için renk düzenlemesi */
+        .stats-card .stats-icon.warning {
+            background: #f39c12; 
+        }
+
+        .stats-card .stats-icon.budget {
+            background: #1abc9c; 
+        }
+    </style>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        let materials = [];
+
+        const modal = document.getElementById('materialModal');
+        const materialForm = document.getElementById('materialForm');
+        const materialTableBody = document.getElementById('materialTableBody');
+
+        // --- Modal İşlemleri ---
+        document.getElementById('addMaterialBtn').addEventListener('click', () => openModal());
+        document.querySelector('.close').addEventListener('click', () => closeModal());
+        document.getElementById('cancelBtn').addEventListener('click', () => closeModal());
+
+        function openModal(material = null) {
+            document.getElementById('modalTitle').textContent = material ? 'Malzeme Düzenle' : 'Yeni Malzeme Ekle';
+            
+            document.getElementById('materialId').value = material ? material.id : '';
+            document.getElementById('materialName').value = material ? material.name : '';
+            document.getElementById('category').value = material ? material.category : 'Hammadde';
+            document.getElementById('unit').value = material ? material.unit : 'Adet';
+            document.getElementById('stockQuantity').value = material ? material.stockQuantity : 0;
+            document.getElementById('minStock').value = material ? material.minStock : 10;
+            document.getElementById('unitPrice').value = material ? material.unitPrice : 0;
+            document.getElementById('supplier').value = material ? material.supplier || '' : '';
+            document.getElementById('description').value = material ? material.description || '' : '';
+            
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+            materialForm.reset();
+        }
+        
+        // --- İstatistik Güncelleme ---
+        function updateStatistics() {
+            const totalMaterials = materials.length;
+            
+            const totalStock = materials.reduce((sum, m) => sum + (parseInt(m.stockQuantity) || 0), 0);
+            const criticalStock = materials.filter(m => (parseInt(m.stockQuantity) || 0) <= (parseInt(m.minStock) || 0)).length;
+            
+            const totalUnitPrice = materials.reduce((sum, m) => sum + (parseFloat(m.unitPrice) || 0), 0);
+            const avgUnitPrice = totalMaterials > 0 ? totalUnitPrice / totalMaterials : 0;
+
+            document.getElementById('totalMaterialCount').textContent = totalMaterials;
+            document.getElementById('totalStockCount').textContent = totalStock;
+            document.getElementById('criticalStockCount').textContent = criticalStock;
+            document.getElementById('avgUnitPrice').textContent = avgUnitPrice.toFixed(2);
+        }
+
+        // --- Malzemeleri Ekrana Çizme (Render) ---
+        function renderMaterials() {
+            materialTableBody.innerHTML = '';
+
+            if (materials.length === 0) {
+                materialTableBody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 20px;">Henüz malzeme kaydı bulunmamaktadır.</td></tr>';
+            } else {
+                materials.forEach(material => {
+                    const stock = parseInt(material.stockQuantity) || 0;
+                    const minStock = parseInt(material.minStock) || 0;
+                    const isCritical = stock <= minStock;
+                    
+                    const row = materialTableBody.insertRow();
+                    row.className = isCritical ? 'critical-row' : '';
+                    
+                    row.innerHTML = `
+                        <td>${material.id}</td>
+                        <td>${material.name}</td>
+                        <td>${material.category}</td>
+                        <td>${material.unit}</td>
+                        <td>
+                            <span class="stock-cell ${isCritical ? 'critical-stock' : ''}">
+                                ${stock}
+                            </span>
+                        </td>
+                        <td>${minStock}</td>
+                        <td>₺${parseFloat(material.unitPrice).toFixed(2)}</td>
+                        <td>${material.supplier || '-'}</td>
+                        <td>
+                            <button class="action-btn edit" onclick="editMaterial(${material.id})"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn delete" onclick="deleteMaterial(${material.id})"><i class="fas fa-trash"></i></button>
+                        </td>
+                    `;
+                });
+            }
+            updateStatistics();
+        }
+
+        // --- Sunucu İşlemleri (API Bağlantıları) ---
+
+        // 1. Malzemeleri Yükleme (GET)
+        async function loadMaterials() {
+            try {
+                const response = await fetch(`${API_URL}/materials`);
+                if (!response.ok) { throw new Error(`Veri alınamadı: ${response.statusText}`); }
+                
+                const result = await response.json();
+                materials = result.data;
+                renderMaterials();
+            } catch (error) {
+                console.error('Malzemeler yüklenirken kritik hata oluştu:', error);
+                showNotification('Sunucu bağlantı hatası. Backend (server.js) çalışıyor mu?', 'error');
+                materials = [];
+                renderMaterials();
+            }
+        }
+
+        // 2. Form Gönderimi (Ekleme veya Düzenleme)
+        materialForm.addEventListener('submit', async function(e) {
+            e.preventDefault(); 
+            
+            const materialId = document.getElementById('materialId').value;
+            
+            const materialData = {
+                name: document.getElementById('materialName').value,
+                category: document.getElementById('category').value,
+                unit: document.getElementById('unit').value,
+                stockQuantity: parseInt(document.getElementById('stockQuantity').value) || 0,
+                minStock: parseInt(document.getElementById('minStock').value) || 0,
+                unitPrice: parseFloat(document.getElementById('unitPrice').value) || 0,
+                supplier: document.getElementById('supplier').value.trim() || null,
+                description: document.getElementById('description').value.trim() || null
+            };
+
+            if (materialId) {
+                await updateExistingMaterial(materialId, materialData);
+            } else {
+                await addNewMaterial(materialData);
+            }
+        });
+
+        // 3. Yeni Malzeme Ekleme (POST)
+        async function addNewMaterial(data) {
+            try {
+                const response = await fetch(`${API_URL}/materials`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data) 
+                });
+
+                if (!response.ok) { 
+                    const errorResult = await response.json();
+                    throw new Error(errorResult.error || 'Malzeme eklenirken bilinmeyen hata oluştu.'); 
+                }
+
+                const result = await response.json(); 
+                
+                materials.push({ ...result.data, id: result.data.id });
+                renderMaterials();
+                closeModal();
+                showNotification('Malzeme başarıyla eklendi', 'success');
+
+            } catch (error) {
+                console.error('Malzeme eklenirken hata:', error);
+                showNotification(`Hata: ${error.message}`, 'error');
+            }
+        }
+        
+        // 4. Malzeme Güncelleme (PUT)
+        async function updateExistingMaterial(id, data) {
+            try {
+                const response = await fetch(`${API_URL}/materials/${id}`, {
+                    method: 'PUT', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) { 
+                    const errorResult = await response.json();
+                    throw new Error(errorResult.error || 'Malzeme güncellenirken bilinmeyen hata oluştu.'); 
+                }
+
+                const result = await response.json(); 
+                
+                const index = materials.findIndex(m => m.id === parseInt(id));
+                if (index !== -1) {
+                    materials[index] = { ...materials[index], ...data, id: parseInt(id) };
+                }
+                
+                renderMaterials();
+                closeModal();
+                showNotification('Malzeme başarıyla güncellendi', 'success');
+            } catch (error) {
+                console.error('Malzeme güncellenirken hata:', error);
+                showNotification(`Hata: ${error.message}`, 'error');
+            }
+        }
+        
+        // 5. Malzeme Silme (DELETE)
+        async function deleteMaterial(id) {
+            if (!confirm("Bu malzemeyi kalıcı olarak silmek istediğinizden emin misiniz?")) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/materials/${id}`, {
+                    method: 'DELETE' 
+                });
+
+                if (!response.ok) { 
+                    const errorResult = await response.json();
+                    throw new Error(errorResult.error || 'Malzeme silinirken bilinmeyen hata oluştu.'); 
+                }
+
+                materials = materials.filter(m => m.id !== id);
+                renderMaterials();
+                showNotification('Malzeme başarıyla silindi', 'success');
+            } catch (error) {
+                console.error('Malzeme silinirken hata:', error);
+                showNotification(`Hata: ${error.message}`, 'error');
+            }
+        }
+
+        // --- Yardımcı Fonksiyonlar ---
+        function editMaterial(id) {
+            const material = materials.find(m => m.id === id);
+            if (material) {
+                openModal(material);
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed; top: 20px; right: 20px; padding: 15px 20px; border-radius: 8px; 
+                color: white; font-weight: 600; z-index: 10000; animation: slideInRight 0.3s ease;
+                background: ${type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#17a2b8'};
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => { notification.remove(); }, 3000);
+        }
+
+        // Arama işlevi
+        document.getElementById('materialSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = materialTableBody.getElementsByTagName('tr');
+            
+            for (let row of rows) {
+                const text = row.textContent.toLowerCase();
+                const shouldDisplay = text.includes(searchTerm) || searchTerm === '';
+                row.style.display = shouldDisplay ? '' : 'none';
+            }
+        });
+
+        // Çıkış butonu
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            localStorage.removeItem('loggedIn');
+            localStorage.removeItem('username');
+            window.location.href = 'login.html';
+        });
+        
+        // Sayfa yüklendiğinde malzemeleri yükle
+        document.addEventListener('DOMContentLoaded', loadMaterials);
+    </script>
+</body>
+</html>

@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Asistan - E-Şantiye</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🏗️ E-ŞANTİYE</h1>
+            <nav class="navbar">
+                <a href="index.html"><i class="fas fa-home"></i> Ana Sayfa</a>
+                <a href="projects.html"><i class="fas fa-project-diagram"></i> Proje Yönetimi</a>
+                <a href="materials.html"><i class="fas fa-boxes"></i> Malzeme Yönetimi</a>
+                <a href="personnel.html"><i class="fas fa-users"></i> Personel Yönetimi</a>
+                <a href="safety.html"><i class="fas fa-shield-alt"></i> İş Güvenliği</a>
+                <a href="ai-assistant.html" class="active"><i class="fas fa-robot"></i> AI Asistan</a>
+                <a href="#" id="logoutBtn" style="margin-left: auto;"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <div class="assistant-header">
+                <div class="assistant-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="assistant-info">
+                    <h2>AI Asistan</h2>
+                    <p class="assistant-description">
+                        <i class="fas fa-comment-dots"></i>
+                        Şirket politika ve prosedürleri hakkında sorularınızı yanıtlamak için buradayım. 
+                        Size nasıl yardımcı olabilirim?
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Sohbet Konteyneri -->
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message bot-message">
+                        <div class="message-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="message-content">
+                            <div class="message-header">
+                                <strong>AI Asistan</strong>
+                                <span class="message-time">Şimdi</span>
+                            </div>
+                            <div class="message-text">
+                                Merhaba! Ben E-Şantiye AI asistanınız. 🏗️<br><br>
+                                Size nasıl yardımcı olabilirim? İşte sorabileceğiniz bazı konular:
+                                <ul>
+                                    <li>📋 <strong>Proje Yönetimi:</strong> Proje oluşturma, ilerleme takibi</li>
+                                    <li>📦 <strong>Malzeme Takibi:</strong> Stok yönetimi, sipariş süreçleri</li>
+                                    <li>👥 <strong>Personel İşlemleri:</strong> İzinler, maaş, performans</li>
+                                    <li>🚨 <strong>İş Güvenliği:</strong> Prosedürler, acil durumlar</li>
+                                    <li>💰 <strong>Finansal Konular:</strong> Bütçe, faturalar, ödemeler</li>
+                                </ul>
+                                Hangi konuda yardıma ihtiyacınız var?
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sohbet Girişi -->
+                <div class="chat-input-container">
+                    <div class="chat-input">
+                        <input type="text" id="userInput" placeholder="Buraya sorunuzu yazın... (Örn: Yıllık izin nasıl kullanılır?)">
+                        <button id="sendButton">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    <div class="chat-features">
+                        <button class="feature-btn" onclick="voiceInput()">
+                            <i class="fas fa-microphone"></i> Sesli Giriş
+                        </button>
+                        <button class="feature-btn" onclick="clearChat()">
+                            <i class="fas fa-trash"></i> Sohbeti Temizle
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hızlı Sorular -->
+            <div class="quick-questions">
+                <h3><i class="fas fa-bolt"></i> Hızlı Sorular</h3>
+                <div class="question-buttons">
+                    <button class="quick-question" data-question="Yıllık izin nasıl kullanılır?">
+                        <i class="fas fa-calendar-alt"></i>
+                        Yıllık İzin
+                    </button>
+                    <button class="quick-question" data-question="İşe giriş saatleri nedir?">
+                        <i class="fas fa-clock"></i>
+                        Çalışma Saatleri
+                    </button>
+                    <button class="quick-question" data-question="Yemek kartı nasıl kullanılır?">
+                        <i class="fas fa-utensils"></i>
+                        Yemek Kartı
+                    </button>
+                    <button class="quick-question" data-question="Hastalık izni prosedürü nedir?">
+                        <i class="fas fa-file-medical"></i>
+                        Hastalık İzni
+                    </button>
+                    <button class="quick-question" data-question="İSG eğitimleri ne zaman?">
+                        <i class="fas fa-shield-alt"></i>
+                        İSG Eğitimleri
+                    </button>
+                    <button class="quick-question" data-question="Proje nasıl oluşturulur?">
+                        <i class="fas fa-project-diagram"></i>
+                        Proje Oluşturma
+                    </button>
+                </div>
+            </div>
+
+            <!-- Yardım Konuları -->
+            <div class="help-topics">
+                <h3><i class="fas fa-life-ring"></i> Yardım Konuları</h3>
+                <div class="topics-grid">
+                    <div class="topic-card" onclick="askTopic('proje')">
+                        <i class="fas fa-project-diagram"></i>
+                        <h4>Proje Yönetimi</h4>
+                        <p>Proje oluşturma, takip ve raporlama</p>
+                    </div>
+                    <div class="topic-card" onclick="askTopic('malzeme')">
+                        <i class="fas fa-boxes"></i>
+                        <h4>Malzeme Takibi</h4>
+                        <p>Stok yönetimi ve sipariş süreçleri</p>
+                    </div>
+                    <div class="topic-card" onclick="askTopic('personel')">
+                        <i class="fas fa-users"></i>
+                        <h4>Personel İşlemleri</h4>
+                        <p>İzin, maaş ve performans yönetimi</p>
+                    </div>
+                    <div class="topic-card" onclick="askTopic('güvenlik')">
+                        <i class="fas fa-shield-alt"></i>
+                        <h4>İş Güvenliği</h4>
+                        <p>Güvenlik prosedürleri ve eğitimler</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 E-Şantiye İnşaat Yönetim Sistemi. Tüm hakları saklıdır.</p>
+        </footer>
+    </div>
+
+    <style>
+        .assistant-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 15px;
+            color: white;
+        }
+
+        .assistant-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .assistant-info h2 {
+            margin: 0 0 0.5rem 0;
+            font-size: 2rem;
+        }
+
+        .assistant-description {
+            margin: 0;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chat-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+            overflow: hidden;
+        }
+
+        .chat-messages {
+            height: 500px;
+            overflow-y: auto;
+            padding: 1.5rem;
+            background: #f8f9fa;
+        }
+
+        .message {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            animation: messageSlide 0.3s ease;
+        }
+
+        .user-message {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .bot-message .message-avatar {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .user-message .message-avatar {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .message-content {
+            max-width: 70%;
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 18px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .user-message .message-content {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .message-header strong {
+            font-size: 0.9rem;
+        }
+
+        .message-time {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .message-text {
+            line-height: 1.5;
+        }
+
+        .message-text ul {
+            margin: 0.5rem 0;
+            padding-left: 1.2rem;
+        }
+
+        .message-text li {
+            margin-bottom: 0.3rem;
+        }
+
+        .chat-input-container {
+            border-top: 1px solid #e9ecef;
+            background: white;
+            padding: 1.5rem;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input input:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .chat-input button {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-input button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .chat-features {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .feature-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e9ecef;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feature-btn:hover {
+            background: #f8f9fa;
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .quick-questions {
+            margin: 3rem 0;
+        }
+
+        .quick-questions h3 {
+            margin-bottom: 1.5rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .question-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .quick-question {
+            padding: 1rem 1.5rem;
+            border: 2px solid #e9ecef;
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .quick-question:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .help-topics {
+            margin: 3rem 0;
+        }
+
+        .help-topics h3 {
+            margin-bottom: 1.5rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .topic-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .topic-card i {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .topic-card h4 {
+            margin: 0 0 0.5rem 0;
+            color: #333;
+        }
+
+        .topic-card p {
+            color: #666;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 0.3rem;
+            padding: 1rem;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #667eea;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes typing {
+            0%, 80%, 100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
+
+    <script>
+        // Kullanıcı kontrolü
+        if (localStorage.getItem('loggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+
+        // Basit AI asistan işlevselliği
+        document.getElementById('sendButton').addEventListener('click', sendMessage);
+        document.getElementById('userInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Hızlı soru butonları
+        document.querySelectorAll('.quick-question').forEach(button => {
+            button.addEventListener('click', function() {
+                const question = this.getAttribute('data-question');
+                document.getElementById('userInput').value = question;
+                sendMessage();
+            });
+        });
+
+        function sendMessage() {
+            const userInput = document.getElementById('userInput');
+            const message = userInput.value.trim();
+            
+            if (message === '') return;
+
+            // Kullanıcı mesajını ekle
+            addMessage(message, 'user');
+            userInput.value = '';
+
+            // Yazıyor göstergesi
+            showTypingIndicator();
+
+            // Basit yanıt sistemi
+            setTimeout(() => {
+                const response = generateResponse(message);
+                removeTypingIndicator();
+                addMessage(response, 'bot');
+            }, 1500 + Math.random() * 1000);
+        }
+
+        function addMessage(content, sender) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            
+            const messageTime = new Date().toLocaleTimeString('tr-TR', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            
+            messageDiv.innerHTML = `
+                <div class="message-avatar">
+                    <i class="fas fa-${sender === 'bot' ? 'robot' : 'user'}"></i>
+                </div>
+                <div class="message-content">
+                    <div class="message-header">
+                        <strong>${sender === 'bot' ? 'AI Asistan' : localStorage.getItem('username') || 'Kullanıcı'}</strong>
+                        <span class="message-time">${messageTime}</span>
+                    </div>
+                    <div class="message-text">${content}</div>
+                </div>
+            `;
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const chatMessages = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot-message';
+            typingDiv.id = 'typing-indicator';
+            
+            typingDiv.innerHTML = `
+                <div class="message-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                    <div class="typing-indicator">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+            `;
+            
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        function generateResponse(question) {
+            const responses = {
+                'yıllık izin': `📅 <strong>Yıllık İzin Kullanımı:</strong><br><br>
+                • <strong>Başvuru:</strong> En az 15 gün önceden İK departmanına yazılı başvuru<br>
+                • <strong>Hak:</strong> 1-5 yıl: 14 gün, 5+ yıl: 20 gün<br>
+                • <strong>Onay:</strong> Yönetici onayı gereklidir<br>
+                • <strong>Planlama:</strong> Ocak ayında yıllık izin planlaması başlar<br><br>
+                İzin taleplerinizi İK portalından yapabilirsiniz.`,
+
+                'işe giriş': `⏰ <strong>Çalışma Saatleri:</strong><br><br>
+                • <strong>Esnek Saatler:</strong> 08:00-10:00 arası başlangıç<br>
+                • <strong>Günlük Süre:</strong> 8 saat<br>
+                • <strong>Çekirdek Saatler:</strong> 10:00-16:00 (ofiste bulunma zorunlu)<br>
+                • <strong>Mesai:</strong> Proje bazlı, yönetici onayı ile<br><br>
+                Geç gelme durumunda yöneticinize bilgi veriniz.`,
+
+                'yemek kartı': `💳 <strong>Yemek Kartı Kullanımı:</strong><br><br>
+                • <strong>Limit:</strong> Aylık 500 TL<br>
+                • <strong>Yenileme:</strong> Her ayın 1'inde<br>
+                • <strong>Kullanım:</strong> Yemekhane ve anlaşmalı marketler<br>
+                • <strong>Bakiye:</strong> Kullanılmayan bakiye sonraki aya aktarılmaz<br><br>
+                Kart kaybı durumunda hemen İK'ya bildirin.`,
+
+                'hastalık izni': `🏥 <strong>Hastalık İzni Prosedürü:</strong><br><br>
+                • <strong>Bildirim:</strong> Hemen yöneticinize bilgi verin<br>
+                • <strong>Rapor:</strong> 2+ gün için doktor raporu zorunlu<br>
+                • <strong>Ücret:</strong> İlk 5 gün %50, sonrası %66<br>
+                • <strong>Evrak:</strong> Raporları İK'ya iletin<br><br>
+                Acil durumlarda 112'yi arayın.`,
+
+                'isg eğitim': `🛡️ <strong>İSG Eğitim Programı:</strong><br><br>
+                • <strong>İlk Yardım:</strong> Her ayın ilk Pazartesi (14:00-16:00)<br>
+                • <strong>Yangın Tatbikatı:</strong> Üç ayda bir<br>
+                • <strong>Güvenlik Semineri:</strong> Her çarşamba<br>
+                • <strong>Mevzuat Eğitimi:</strong> Yılda 2 kez<br><br>
+                Katılım zorunludur, devamsızlık bildirin.`,
+
+                'izin': `📋 <strong>İzin Talepleri:</strong><br><br>
+                • <strong>Portal:</strong> İK portalından online başvuru<br>
+                • <strong>Süre:</strong> En az 3 iş günü önceden<br>
+                • <strong>Acil İzin:</strong> Doğrudan yöneticiye bildirim<br>
+                • <strong>Onay:</strong> Yönetici onayı sonrası kesinleşir<br><br>
+                Planlı izinler için erken başvuru yapın.`,
+
+                'proje': `🏗️ <strong>Proje Oluşturma:</strong><br><br>
+                • <strong>Başvuru:</strong> Proje Yönetimi sayfasından<br>
+                • <strong>Değerlendirme:</strong> Her ayın son haftası<br>
+                • <strong>Bütçe:</strong> Finans departmanı onayı<br>
+                • <strong>Takip:</strong> Gerçek zamanlı ilerleme takibi<br><br>
+                Detaylı bilgi için Proje Yönetimi sayfasını ziyaret edin.`,
+
+                'malzeme': `📦 <strong>Malzeme Talepleri:</strong><br><br>
+                • <strong>Talep:</strong> Malzeme Yönetimi sayfası<br>
+                • <strong>Onay:</strong> 1-3 iş günü<br>
+                • <strong>Kritik Stok:</strong> Otomatik uyarı sistemi<br>
+                • <strong>Tedarik:</strong> Anlaşmalı tedarikçiler<br><br>
+                Acil ihtiyaçlar için yönetici onayı ile hızlı talep.`
+            };
+
+            question = question.toLowerCase();
+            
+            for (const [key, value] of Object.entries(responses)) {
+                if (question.includes(key)) {
+                    return value;
+                }
+            }
+
+            return `🤖 <strong>AI Asistan:</strong><br><br>
+            Sorunuz için teşekkür ederim! Anladığım kadarıyla:<br><br>
+            "<em>${question}</em>"<br><br>
+            Bu konuda daha detaylı bilgi için:<br>
+            • İlgili departman ile iletişime geçebilirsiniz<br>
+            • Şirket dokümanlarını inceleyebilirsiniz<br>
+            • Yardım konularından ilgili bölüme bakabilirsiniz<br><br>
+            Size nasıl daha iyi yardımcı olabilirim?`;
+        }
+
+        function voiceInput() {
+            alert('🎤 Sesli giriş özelliği yakında eklenecek!\n\nŞu an metin girişi kullanabilirsiniz.');
+        }
+
+        function clearChat() {
+            if (confirm('Sohbet geçmişini temizlemek istediğinizden emin misiniz?')) {
+                const chatMessages = document.getElementById('chatMessages');
+                // İlk mesajı (hoş geldin mesajını) koru, diğerlerini temizle
+                const welcomeMessage = chatMessages.firstElementChild;
+                chatMessages.innerHTML = '';
+                chatMessages.appendChild(welcomeMessage);
+            }
+        }
+
+        function askTopic(topic) {
+            const topics = {
+                'proje': 'Proje oluşturma ve yönetim süreçleri hakkında bilgi almak istiyorum.',
+                'malzeme': 'Malzeme stok takibi ve sipariş süreçleri nasıl işliyor?',
+                'personel': 'Personel izin ve performans yönetimi prosedürleri nelerdir?',
+                'güvenlik': 'İş güvenliği prosedürleri ve eğitim programları hakkında bilgi verir misiniz?'
+            };
+            
+            document.getElementById('userInput').value = topics[topic];
+            sendMessage();
+        }
+
+        // Çıkış butonu
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            localStorage.removeItem('loggedIn');
+            localStorage.removeItem('username');
+            window.location.href = 'login.html';
+        });
+
+        // Sayfa yüklendiğinde sohbeti temizle (demo için)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Demo sohbet geçmişini temizle
+            const chatMessages = document.getElementById('chatMessages');
+            const welcomeMessage = chatMessages.firstElementChild;
+            chatMessages.innerHTML = '';
+            chatMessages.appendChild(welcomeMessage);
+        });
+    </script>
+</body>
+</html>

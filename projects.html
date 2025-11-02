@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje Yönetimi - E-Şantiye</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🏗️ E-ŞANTİYE</h1>
+            <nav class="navbar">
+                <a href="index.html"><i class="fas fa-home"></i> Ana Sayfa</a>
+                <a href="projects.html" class="active"><i class="fas fa-project-diagram"></i> Proje Yönetimi</a>
+                <a href="materials.html"><i class="fas fa-boxes"></i> Malzeme Yönetimi</a>
+                <a href="personnel.html"><i class="fas fa-users"></i> Personel Yönetimi</a>
+                <a href="safety.html"><i class="fas fa-shield-alt"></i> İş Güvenliği</a>
+                <a href="ai-assistant.html"><i class="fas fa-robot"></i> AI Asistan</a>
+                <a href="#" id="logoutBtn" style="margin-left: auto;"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <div class="page-header">
+                <div class="header-content">
+                    <h2><i class="fas fa-project-diagram"></i> Proje Yönetimi</h2>
+                    <p>Aktif, tamamlanan ve bekleyen tüm projeleri yönetin</p>
+                </div>
+                <button class="btn btn-primary" id="addProjectBtn">
+                    <i class="fas fa-plus"></i> Yeni Proje Başlat
+                </button>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="stats-card">
+                    <div class="stats-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3>Toplam Proje</h3>
+                        <div class="stats-number" id="totalProjects">0</div>
+                        <div class="stats-detail">
+                            <span class="active-projects">Aktif: <span id="activeProjects">0</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stats-icon progress">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3>Ort. İlerleme</h3>
+                        <div class="stats-number">%<span id="avgProgress">0</span></div>
+                        <div class="stats-detail">
+                            <span class="spent-budget">Tüm projeler</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stats-icon budget">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3>Toplam Bütçe</h3>
+                        <div class="stats-number">₺<span id="totalBudget">0</span>M</div>
+                        <div class="stats-detail">
+                            <span class="spent-budget">Aktif/Tamamlanan</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stats-icon warning">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3>Gecikme Uyarısı</h3>
+                        <div class="stats-number" id="delayWarning">0</div>
+                        <div class="stats-detail">
+                            <span class="delay-warning">Riskli proje sayısı</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="search-filter-section">
+                <div class="search-bar">
+                    <input type="text" id="projectSearch" placeholder="Proje ara...">
+                    <button><i class="fas fa-search"></i></button>
+                </div>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">Tümü</button>
+                    <button class="filter-btn" data-filter="active">Aktif</button>
+                    <button class="filter-btn" data-filter="completed">Tamamlandı</button>
+                    <button class="filter-btn" data-filter="on_hold">Beklemede</button>
+                    <button class="filter-btn" data-filter="risk">Riskli</button>
+                </div>
+            </div>
+
+            <div class="project-grid" id="projectGrid">
+                </div>
+
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <i class="fas fa-building"></i>
+                <h3>Henüz proje eklenmemiş</h3>
+                <p>İlk projenizi başlatmak için "Yeni Proje Başlat" butonuna tıklayın.</p>
+                <button class="btn btn-primary" id="addFirstProjectBtn">
+                    <i class="fas fa-plus"></i> İlk Projeyi Başlat
+                </button>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 E-Şantiye İnşaat Yönetim Sistemi. Tüm hakları saklıdır.</p>
+        </footer>
+    </div>
+
+    <div id="projectModal" class="modal">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h3 id="modalTitle"><i class="fas fa-plus"></i> Yeni Proje Başlat</h3>
+                <button class="close">&times;</button>
+            </div>
+            <form id="projectForm">
+                <input type="hidden" id="projectId">
+                
+                <div class="form-group">
+                    <label for="projectName"><i class="fas fa-building"></i> Proje Adı</label>
+                    <input type="text" id="projectName" class="form-control" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="startDate"><i class="fas fa-calendar-alt"></i> Başlangıç Tarihi</label>
+                        <input type="date" id="startDate" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="duration"><i class="fas fa-hourglass-half"></i> Süre (Gün)</label>
+                        <input type="number" id="duration" class="form-control" min="1" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="budget"><i class="fas fa-money-bill-wave"></i> Bütçe (₺)</label>
+                        <input type="number" id="budget" class="form-control" min="0" step="1000">
+                    </div>
+                    <div class="form-group">
+                        <label for="progress"><i class="fas fa-percent"></i> İlerleme (%)</label>
+                        <input type="number" id="progress" class="form-control" min="0" max="100">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="status"><i class="fas fa-info-circle"></i> Durum</label>
+                        <select id="status" class="form-control" required>
+                            <option value="active">Aktif</option>
+                            <option value="completed">Tamamlandı</option>
+                            <option value="on_hold">Beklemede</option>
+                            <option value="cancelled">İptal Edildi</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="priority"><i class="fas fa-fire-alt"></i> Öncelik</label>
+                        <select id="priority" class="form-control">
+                            <option value="yüksek">Yüksek</option>
+                            <option value="orta">Orta</option>
+                            <option value="düşük">Düşük</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="location"><i class="fas fa-map-marker-alt"></i> Konum/Şehir</label>
+                        <input type="text" id="location" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="type"><i class="fas fa-sitemap"></i> Tip</label>
+                        <select id="type" class="form-control">
+                            <option value="konut">Konut</option>
+                            <option value="ticari">Ticari</option>
+                            <option value="altyapi">Altyapı</option>
+                            <option value="endustriyel">Endüstriyel</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Kaydet
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">
+                        <i class="fas fa-times"></i> İptal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        /* Proje Kartları için özel CSS */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 25px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            border-left: 5px solid;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .project-card.status-active { border-left-color: #2ecc71; }
+        .project-card.status-completed { border-left-color: #3498db; }
+        .project-card.status-on_hold { border-left-color: #f39c12; }
+        .project-card.status-cancelled { border-left-color: #e74c3c; }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .project-header h3 {
+            font-size: 1.5rem;
+            color: #333;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .project-meta span {
+            display: inline-block;
+            background: #eee;
+            color: #555;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .project-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+
+        .project-info div {
+            padding: 5px 0;
+            color: #555;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .project-info div i {
+            color: #34495e;
+            width: 20px;
+            text-align: center;
+        }
+
+        .progress-section {
+            margin-bottom: 20px;
+        }
+
+        .progress-bar-container {
+            height: 10px;
+            background: #ecf0f1;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #2ecc71;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            border-top: 1px solid #f4f4f4;
+            padding-top: 15px;
+        }
+
+        .card-actions button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .card-actions .btn-edit {
+            background: #3498db;
+            color: white;
+        }
+
+        .card-actions .btn-delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        /* Öncelik Etiketleri */
+        .priority-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 12px;
+            text-transform: uppercase;
+        }
+
+        .priority-badge.yüksek { background: #fbe0e3; color: #c0392b; }
+        .priority-badge.orta { background: #fff3cd; color: #f39c12; }
+        .priority-badge.düşük { background: #d4edda; color: #2ecc71; }
+    </style>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+
+        let projects = [];
+        let currentFilter = 'all';
+
+        const modal = document.getElementById('projectModal');
+        const projectForm = document.getElementById('projectForm');
+        const projectGrid = document.getElementById('projectGrid');
+        const emptyState = document.getElementById('emptyState');
+
+        // --- Modal İşlemleri ---
+        document.getElementById('addProjectBtn').addEventListener('click', () => openModal());
+        document.getElementById('addFirstProjectBtn').addEventListener('click', () => openModal());
+        document.querySelector('.close').addEventListener('click', () => closeModal());
+        document.getElementById('cancelBtn').addEventListener('click', () => closeModal());
+
+        function openModal(project = null) {
+            document.getElementById('modalTitle').innerHTML = project ? 
+                '<i class="fas fa-edit"></i> Proje Düzenle' : 
+                '<i class="fas fa-plus"></i> Yeni Proje Başlat';
+                
+            document.getElementById('projectId').value = project ? project.id : '';
+            document.getElementById('projectName').value = project ? project.name : '';
+            document.getElementById('startDate').value = project ? project.startDate : new Date().toISOString().split('T')[0];
+            document.getElementById('duration').value = project ? project.duration : '';
+            document.getElementById('budget').value = project ? project.budget : '';
+            document.getElementById('progress').value = project ? project.progress : 0;
+            document.getElementById('status').value = project ? project.status : 'active';
+            document.getElementById('priority').value = project ? project.priority : 'orta';
+            document.getElementById('location').value = project ? project.location || '' : '';
+            document.getElementById('type').value = project ? project.type || 'konut' : 'konut';
+            
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+            projectForm.reset();
+        }
+
+        // --- Filtreleme ---
+        document.querySelectorAll('.filter-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                currentFilter = this.getAttribute('data-filter');
+                renderProjects();
+            });
+        });
+
+        // --- İstatistik Güncelleme ---
+        function updateStatistics() {
+            const totalProjects = projects.length;
+            const activeProjects = projects.filter(p => p.status === 'active').length;
+            const completedProjects = projects.filter(p => p.status === 'completed').length;
+            
+            const totalBudget = projects.reduce((sum, project) => sum + (project.budget || 0), 0);
+            
+            const totalProgress = projects.reduce((sum, project) => sum + (project.progress || 0), 0);
+            const avgProgress = totalProjects > 0 ? Math.round(totalProgress / totalProjects) : 0;
+            
+            // Riskli Proje (İlerleme oranı, geçen süreden çok geride)
+            const today = new Date();
+            const delayWarning = projects.filter(p => {
+                if (p.status !== 'active') return false;
+                const start = new Date(p.startDate);
+                const elapsedDays = Math.ceil((today - start) / (1000 * 60 * 60 * 24));
+                const expectedProgress = (elapsedDays / p.duration) * 100;
+                // Gerçek ilerleme, beklenen ilerlemeden %10'dan fazla geride ise uyarı ver
+                return expectedProgress > p.progress + 10;
+            }).length;
+
+            document.getElementById('totalProjects').textContent = totalProjects;
+            document.getElementById('activeProjects').textContent = activeProjects;
+            document.getElementById('avgProgress').textContent = avgProgress;
+            document.getElementById('totalBudget').textContent = (totalBudget / 1000000).toFixed(1); // Milyon TL olarak göster
+            document.getElementById('delayWarning').textContent = delayWarning;
+        }
+
+        // --- Projeleri Ekrana Çizme (Render) ---
+        function renderProjects() {
+            let filteredProjects = projects;
+            
+            if (currentFilter === 'active') {
+                filteredProjects = projects.filter(p => p.status === 'active');
+            } else if (currentFilter === 'completed') {
+                filteredProjects = projects.filter(p => p.status === 'completed');
+            } else if (currentFilter === 'on_hold') {
+                filteredProjects = projects.filter(p => p.status === 'on_hold');
+            } else if (currentFilter === 'risk') {
+                // Riskli projeleri filtreleme (İstatistik hesaplamasını tekrar kullan)
+                const today = new Date();
+                filteredProjects = projects.filter(p => {
+                    if (p.status !== 'active') return false;
+                    const start = new Date(p.startDate);
+                    const elapsedDays = Math.ceil((today - start) / (1000 * 60 * 60 * 24));
+                    const expectedProgress = (elapsedDays / p.duration) * 100;
+                    return expectedProgress > p.progress + 10;
+                });
+            }
+
+            if (filteredProjects.length === 0) {
+                projectGrid.innerHTML = '';
+                projectGrid.style.display = 'none';
+                emptyState.style.display = 'block';
+            } else {
+                projectGrid.style.display = 'grid';
+                emptyState.style.display = 'none';
+
+                projectGrid.innerHTML = filteredProjects.map(project => {
+                    const statusText = getStatusText(project.status);
+                    const isRisk = currentFilter === 'risk' || (
+                        project.status === 'active' && 
+                        (new Date() - new Date(project.startDate)) / (1000 * 60 * 60 * 24 * project.duration) * 100 > project.progress + 10
+                    );
+
+                    return `
+                        <div class="project-card status-${project.status}">
+                            <div class="project-header">
+                                <h3>${project.name}</h3>
+                                <div class="project-meta">
+                                    <span class="priority-badge ${project.priority}">${project.priority}</span>
+                                    <span>${statusText}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="progress-section">
+                                <div class="progress-text">
+                                    <span>İlerleme: ${project.progress}%</span>
+                                    ${isRisk ? '<span style="color: #e74c3c;"><i class="fas fa-exclamation-triangle"></i> Gecikme Riski</span>' : ''}
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar" style="width: ${project.progress}%; background: ${project.status === 'completed' ? '#3498db' : (isRisk ? '#e74c3c' : '#2ecc71')};"></div>
+                                </div>
+                            </div>
+
+                            <div class="project-info">
+                                <div><i class="fas fa-map-marker-alt"></i> ${project.location || 'Bilinmiyor'}</div>
+                                <div><i class="fas fa-sitemap"></i> ${getTypeText(project.type)}</div>
+                                <div><i class="fas fa-money-bill-wave"></i> ₺${(project.budget / 1000000).toFixed(2)}M</div>
+                                <div><i class="fas fa-hourglass-half"></i> ${project.duration} Gün</div>
+                                <div><i class="fas fa-calendar-alt"></i> ${new Date(project.startDate).toLocaleDateString('tr-TR')}</div>
+                            </div>
+
+                            <div class="card-actions">
+                                <button class="btn-edit" onclick="editProject(${project.id})"><i class="fas fa-edit"></i> Düzenle</button>
+                                <button class="btn-delete" onclick="deleteProject(${project.id})"><i class="fas fa-trash"></i> Sil</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            updateStatistics();
+        }
+
+        // --- Sunucu İşlemleri (API Bağlantıları) ---
+
+        // Verileri çekme (GET)
+        async function loadProjects() {
+            try {
+                const response = await fetch(`${API_URL}/projects`);
+                if (!response.ok) { throw new Error(`Veri alınamadı: ${response.statusText}`); }
+                const result = await response.json();
+                projects = result.data;
+                renderProjects();
+            } catch (error) {
+                console.error('Projeler yüklenirken hata oluştu:', error);
+                showNotification('Sunucu bağlantı hatası. Backend (server.js) çalışmıyor olabilir.', 'error');
+            }
+        }
+
+        // Form gönderimi (Ekleme veya Düzenleme)
+        projectForm.addEventListener('submit', async function(e) {
+            e.preventDefault(); 
+            
+            const projectId = document.getElementById('projectId').value;
+            
+            const projectData = {
+                name: document.getElementById('projectName').value,
+                startDate: document.getElementById('startDate').value,
+                duration: parseInt(document.getElementById('duration').value),
+                budget: parseFloat(document.getElementById('budget').value) || 0,
+                progress: parseInt(document.getElementById('progress').value),
+                status: document.getElementById('status').value,
+                priority: document.getElementById('priority').value,
+                location: document.getElementById('location').value || null,
+                type: document.getElementById('type').value || null
+            };
+
+            if (projectId) {
+                await updateExistingProject(projectId, projectData);
+            } else {
+                await addNewProject(projectData);
+            }
+        });
+
+        // Yeni proje ekleme (POST)
+        async function addNewProject(data) {
+            try {
+                const response = await fetch(`${API_URL}/projects`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data) 
+                });
+
+                if (!response.ok) { throw new Error('Sunucuda ekleme hatası oluştu.'); }
+
+                const result = await response.json(); 
+                
+                projects.push(result.data); 
+                renderProjects();
+                closeModal();
+                showNotification('Proje başarıyla başlatıldı', 'success');
+
+            } catch (error) {
+                console.error('Proje eklenirken hata:', error);
+                showNotification('Proje eklenirken bir hata oluştu.', 'error');
+            }
+        }
+        
+        // Proje güncelleme (PUT)
+        async function updateExistingProject(id, data) {
+            try {
+                const response = await fetch(`${API_URL}/projects/${id}`, {
+                    method: 'PUT', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) { throw new Error('Sunucuda güncelleme hatası oluştu.'); }
+
+                const result = await response.json(); 
+                
+                const index = projects.findIndex(p => p.id === parseInt(id));
+                if (index !== -1) {
+                    projects[index] = { ...projects[index], ...data, id: parseInt(id) };
+                }
+                
+                renderProjects();
+                closeModal();
+                showNotification('Proje başarıyla güncellendi', 'success');
+            } catch (error) {
+                console.error('Proje güncellenirken hata:', error);
+                showNotification('Proje güncellenirken bir hata oluştu.', 'error');
+            }
+        }
+        
+        // Proje silme (DELETE)
+        function deleteProject(id) {
+            if (confirm("Bu projeyi kalıcı olarak silmek istediğinizden emin misiniz?")) {
+                performDelete(id);
+            }
+        }
+
+        async function performDelete(id) {
+            try {
+                const response = await fetch(`${API_URL}/projects/${id}`, {
+                    method: 'DELETE' 
+                });
+
+                if (!response.ok) { throw new Error('Sunucuda silme hatası oluştu.'); }
+
+                projects = projects.filter(p => p.id !== id);
+                renderProjects();
+                showNotification('Proje başarıyla silindi', 'success');
+            } catch (error) {
+                console.error('Proje silinirken hata:', error);
+                showNotification('Proje silinirken bir hata oluştu.', 'error');
+            }
+        }
+
+        // --- Yardımcı Fonksiyonlar ---
+        
+        function editProject(id) {
+            const project = projects.find(p => p.id === id);
+            if (project) {
+                openModal(project);
+            }
+        }
+
+        function getStatusText(status) {
+            const statuses = {
+                'active': 'Aktif',
+                'completed': 'Tamamlandı',
+                'on_hold': 'Beklemede',
+                'cancelled': 'İptal Edildi'
+            };
+            return statuses[status] || status;
+        }
+
+        function getTypeText(type) {
+            const types = {
+                'konut': 'Konut Projesi',
+                'ticari': 'Ticari Yapı',
+                'altyapi': 'Altyapı',
+                'endustriyel': 'Endüstriyel Tesis'
+            };
+            return types[type] || type;
+        }
+
+        // Arama İşlevi
+        document.getElementById('projectSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const cards = projectGrid.getElementsByClassName('project-card');
+            
+            for (let card of cards) {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(searchTerm) ? 'block' : 'none';
+            }
+        });
+
+        // Çıkış butonu ve Bildirim
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            localStorage.removeItem('loggedIn');
+            localStorage.removeItem('username');
+            window.location.href = 'login.html';
+        });
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed; top: 20px; right: 20px; padding: 15px 20px; border-radius: 8px; 
+                color: white; font-weight: 600; z-index: 10000; animation: slideInRight 0.3s ease;
+                background: ${type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#17a2b8'};
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => { notification.remove(); }, 3000);
+        }
+
+        // Sayfa yüklendiğinde projeleri yükle
+        document.addEventListener('DOMContentLoaded', loadProjects);
+    </script>
+</body>
+</html>

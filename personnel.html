@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personel Yönetimi - E-Şantiye</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🏗️ E-ŞANTİYE</h1>
+            <nav class="navbar">
+                <a href="index.html"><i class="fas fa-home"></i> Ana Sayfa</a>
+                <a href="projects.html"><i class="fas fa-project-diagram"></i> Proje Yönetimi</a>
+                <a href="materials.html"><i class="fas fa-boxes"></i> Malzeme Yönetimi</a>
+                <a href="personnel.html" class="active"><i class="fas fa-users"></i> Personel Yönetimi</a>
+                <a href="safety.html"><i class="fas fa-shield-alt"></i> İş Güvenliği</a>
+                <a href="ai-assistant.html"><i class="fas fa-robot"></i> AI Asistan</a>
+                <a href="#" id="logoutBtn" style="margin-left: auto;"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <div class="page-header">
+                <div class="header-content">
+                    <h2><i class="fas fa-users"></i> Personel Yönetimi</h2>
+                    <p>Tüm personel bilgilerini, maaşları ve görevlerini yönetin</p>
+                </div>
+                <button class="btn btn-primary" id="addPersonnelBtn">
+                    <i class="fas fa-plus"></i> Yeni Personel Ekle
+                </button>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="stats-card">
+                    <div class="stats-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3>Toplam Personel</h3>
+                        <div class="stats-number" id="totalPersonnelCount">0</div>
+                        <div class="stats-detail">
+                            <span class="active-projects">Aktif: <span id="activePersonnel">0</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stats-icon progress">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3>Ort. Maaş</h3>
+                        <div class="stats-number">₺<span id="avgSalary">0</span></div>
+                        <div class="stats-detail">
+                            <span class="spent-budget">Aylık toplam</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stats-icon budget">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3>Pozisyonlar</h3>
+                        <div class="stats-number" id="totalPositions">0</div>
+                        <div class="stats-detail">
+                            <span class="spent-budget">Farklı pozisyon</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stats-icon warning">
+                        <i class="fas fa-user-clock"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3>İşe Yeni Alınan</h3>
+                        <div class="stats-number" id="newHires">0</div>
+                        <div class="stats-detail">
+                            <span class="delay-warning">Son 30 gün</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="data-section">
+                <div class="search-bar">
+                    <input type="text" id="personnelSearch" placeholder="Personel adı, pozisyon veya TC kimlik ara...">
+                    <button><i class="fas fa-search"></i></button>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>Ad Soyad</th>
+                                <th>Pozisyon</th>
+                                <th>TC Kimlik</th>
+                                <th>Maaş (₺)</th>
+                                <th>Durum</th>
+                                <th>İşe Giriş Tarihi</th>
+                                <th class="action-column">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="personnelTableBody">
+                            <!-- Personel verileri buraya eklenecek -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 E-Şantiye İnşaat Yönetim Sistemi. Tüm hakları saklıdır.</p>
+        </footer>
+    </div>
+
+    <!-- Personel Ekleme/Düzenleme Modal -->
+    <div id="personnelModal" class="modal">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h3 id="modalTitle"><i class="fas fa-plus"></i> Yeni Personel Ekle</h3>
+                <button class="close">&times;</button>
+            </div>
+            <form id="personnelForm">
+                <input type="hidden" id="personnelId">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="personnelName"><i class="fas fa-user"></i> Ad Soyad</label>
+                        <input type="text" id="personnelName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="position"><i class="fas fa-briefcase"></i> Pozisyon</label>
+                        <select id="position" class="form-control" required>
+                            <option value="">Pozisyon Seçin</option>
+                            <option value="Şantiye Şefi">Şantiye Şefi</option>
+                            <option value="Mimar">Mimar</option>
+                            <option value="İnşaat Mühendisi">İnşaat Mühendisi</option>
+                            <option value="Elektrik Mühendisi">Elektrik Mühendisi</option>
+                            <option value="Makine Mühendisi">Makine Mühendisi</option>
+                            <option value="Usta">Usta</option>
+                            <option value="İşçi">İşçi</option>
+                            <option value="Tekniker">Tekniker</option>
+                            <option value="Sürveyan">Sürveyan</option>
+                            <option value="Güvenlik Görevlisi">Güvenlik Görevlisi</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tcKimlik"><i class="fas fa-id-card"></i> TC Kimlik No</label>
+                        <input type="text" id="tcKimlik" class="form-control" maxlength="11" pattern="[0-9]{11}">
+                    </div>
+                    <div class="form-group">
+                        <label for="salary"><i class="fas fa-money-bill-wave"></i> Maaş (₺)</label>
+                        <input type="number" id="salary" class="form-control" min="0">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="startDate"><i class="fas fa-calendar-alt"></i> İşe Giriş Tarihi</label>
+                        <input type="date" id="startDate" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="status"><i class="fas fa-info-circle"></i> Durum</label>
+                        <select id="status" class="form-control" required>
+                            <option value="Aktif">Aktif</option>
+                            <option value="İzinli">İzinli</option>
+                            <option value="Raporlu">Raporlu</option>
+                            <option value="İşten Ayrıldı">İşten Ayrıldı</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Kaydet
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">
+                        <i class="fas fa-times"></i> İptal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        .data-section {
+            margin-top: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table thead tr {
+            background-color: #f4f7f9;
+            color: #34495e;
+            border-bottom: 2px solid #ecf0f1;
+            font-size: 0.95rem;
+        }
+
+        .data-table th {
+            padding: 15px 20px;
+            text-align: left;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table tbody tr {
+            border-bottom: 1px solid #ecf0f1;
+            transition: background-color 0.2s;
+        }
+
+        .data-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .data-table td {
+            padding: 12px 20px;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .action-column {
+            width: 120px;
+            text-align: center;
+        }
+
+        .action-btn {
+            padding: 8px 12px;
+            margin-left: 5px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .action-btn.edit {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .action-btn.delete {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-active { background: #d4edda; color: #155724; }
+        .status-izinli { background: #fff3cd; color: #856404; }
+        .status-raporlu { background: #d1ecf1; color: #0c5460; }
+        .status-inactive { background: #f8d7da; color: #721c24; }
+    </style>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        let personnel = [];
+
+        const modal = document.getElementById('personnelModal');
+        const personnelForm = document.getElementById('personnelForm');
+        const personnelTableBody = document.getElementById('personnelTableBody');
+
+        // Modal İşlemleri
+        document.getElementById('addPersonnelBtn').addEventListener('click', () => openModal());
+        document.querySelector('.close').addEventListener('click', () => closeModal());
+        document.getElementById('cancelBtn').addEventListener('click', () => closeModal());
+
+        function openModal(person = null) {
+            document.getElementById('modalTitle').textContent = person ? 'Personel Düzenle' : 'Yeni Personel Ekle';
+            
+            document.getElementById('personnelId').value = person ? person.id : '';
+            document.getElementById('personnelName').value = person ? person.name : '';
+            document.getElementById('position').value = person ? person.position : '';
+            document.getElementById('tcKimlik').value = person ? person.tcKimlik || '' : '';
+            document.getElementById('salary').value = person ? person.salary || '' : '';
+            document.getElementById('startDate').value = person ? person.startDate : new Date().toISOString().split('T')[0];
+            document.getElementById('status').value = person ? person.status : 'Aktif';
+            
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+            personnelForm.reset();
+        }
+
+        // İstatistik Güncelleme
+        function updateStatistics() {
+            const totalPersonnel = personnel.length;
+            const activePersonnel = personnel.filter(p => p.status === 'Aktif').length;
+            
+            const totalSalary = personnel.reduce((sum, p) => sum + (parseFloat(p.salary) || 0), 0);
+            const avgSalary = totalPersonnel > 0 ? Math.round(totalSalary / totalPersonnel) : 0;
+            
+            const positions = [...new Set(personnel.map(p => p.position).filter(Boolean))];
+            const totalPositions = positions.length;
+
+            // Son 30 günde işe alınanlar
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            const newHires = personnel.filter(p => {
+                if (!p.startDate) return false;
+                const startDate = new Date(p.startDate);
+                return startDate >= thirtyDaysAgo;
+            }).length;
+
+            document.getElementById('totalPersonnelCount').textContent = totalPersonnel;
+            document.getElementById('activePersonnel').textContent = activePersonnel;
+            document.getElementById('avgSalary').textContent = avgSalary.toLocaleString('tr-TR');
+            document.getElementById('totalPositions').textContent = totalPositions;
+            document.getElementById('newHires').textContent = newHires;
+        }
+
+        // Personelleri Ekrana Çizme
+        function renderPersonnel() {
+            personnelTableBody.innerHTML = '';
+
+            if (personnel.length === 0) {
+                personnelTableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 20px;">Henüz personel kaydı bulunmamaktadır.</td></tr>';
+            } else {
+                personnel.forEach(person => {
+                    const row = personnelTableBody.insertRow();
+                    
+                    // Status class'ını belirle
+                    let statusClass = 'status-active';
+                    if (person.status === 'İzinli') statusClass = 'status-izinli';
+                    else if (person.status === 'Raporlu') statusClass = 'status-raporlu';
+                    else if (person.status === 'İşten Ayrıldı') statusClass = 'status-inactive';
+                    
+                    // Tarih formatını düzenle
+                    let formattedDate = '-';
+                    if (person.startDate) {
+                        try {
+                            formattedDate = new Date(person.startDate).toLocaleDateString('tr-TR');
+                        } catch (e) {
+                            formattedDate = person.startDate;
+                        }
+                    }
+                    
+                    row.innerHTML = `
+                        <td>${person.id}</td>
+                        <td><strong>${person.name || '-'}</strong></td>
+                        <td>${person.position || '-'}</td>
+                        <td>${person.tcKimlik || person.tckimlik || '-'}</td>
+                        <td>${person.salary ? '₺' + parseInt(person.salary).toLocaleString('tr-TR') : '-'}</td>
+                        <td>
+                            <span class="status-badge ${statusClass}">
+                                ${person.status || 'Aktif'}
+                            </span>
+                        </td>
+                        <td>${formattedDate}</td>
+                        <td>
+                            <button class="action-btn edit" onclick="editPersonnel(${person.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn delete" onclick="deletePersonnel(${person.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                });
+            }
+            updateStatistics();
+        }
+
+        // API İşlemleri
+        async function loadPersonnel() {
+            try {
+                const response = await fetch(`${API_URL}/personnel`);
+                if (!response.ok) throw new Error('Veri alınamadı');
+                
+                const result = await response.json();
+                console.log('Backendden gelen veri:', result);
+                
+                // Backend veri yapısını frontend formatına dönüştür
+                personnel = (result.data || result).map(person => ({
+                    id: person.id,
+                    name: person.name || '',
+                    position: person.position || null,
+                    tcKimlik: person.tcKimlik || person.tckimlik || null,
+                    salary: person.salary || null,
+                    startDate: person.startDate || person.joindate || null,
+                    status: person.status || 'Aktif'
+                }));
+                
+                renderPersonnel();
+            } catch (error) {
+                console.error('Personel yüklenirken hata:', error);
+                showNotification('Sunucu bağlantı hatası. Backend çalışıyor mu?', 'error');
+                personnel = [];
+                renderPersonnel();
+            }
+        }
+
+        // Form Gönderimi
+        personnelForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const personnelId = document.getElementById('personnelId').value;
+            
+            const personnelData = {
+                name: document.getElementById('personnelName').value,
+                position: document.getElementById('position').value,
+                tcKimlik: document.getElementById('tcKimlik').value || null,
+                salary: document.getElementById('salary').value ? parseFloat(document.getElementById('salary').value) : null,
+                startDate: document.getElementById('startDate').value,
+                status: document.getElementById('status').value
+            };
+
+            if (personnelId) {
+                await updatePersonnel(personnelId, personnelData);
+            } else {
+                await addPersonnel(personnelData);
+            }
+        });
+
+        async function addPersonnel(data) {
+            try {
+                const response = await fetch(`${API_URL}/personnel`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) throw new Error('Personel eklenirken hata oluştu');
+
+                const result = await response.json();
+                personnel.push(result.data);
+                renderPersonnel();
+                closeModal();
+                showNotification('Personel başarıyla eklendi', 'success');
+            } catch (error) {
+                console.error('Personel eklenirken hata:', error);
+                showNotification('Personel eklenirken bir hata oluştu', 'error');
+            }
+        }
+
+        async function updatePersonnel(id, data) {
+            try {
+                const response = await fetch(`${API_URL}/personnel/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) throw new Error('Personel güncellenirken hata oluştu');
+
+                const index = personnel.findIndex(p => p.id === parseInt(id));
+                if (index !== -1) {
+                    personnel[index] = { ...personnel[index], ...data, id: parseInt(id) };
+                }
+                
+                renderPersonnel();
+                closeModal();
+                showNotification('Personel başarıyla güncellendi', 'success');
+            } catch (error) {
+                console.error('Personel güncellenirken hata:', error);
+                showNotification('Personel güncellenirken bir hata oluştu', 'error');
+            }
+        }
+
+        async function deletePersonnel(id) {
+            if (!confirm("Bu personeli silmek istediğinizden emin misiniz?")) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/personnel/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) throw new Error('Personel silinirken hata oluştu');
+
+                personnel = personnel.filter(p => p.id !== id);
+                renderPersonnel();
+                showNotification('Personel başarıyla silindi', 'success');
+            } catch (error) {
+                console.error('Personel silinirken hata:', error);
+                showNotification('Personel silinirken bir hata oluştu', 'error');
+            }
+        }
+
+        // Yardımcı Fonksiyonlar
+        function editPersonnel(id) {
+            const person = personnel.find(p => p.id === id);
+            if (person) openModal(person);
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed; top: 20px; right: 20px; padding: 15px 20px; border-radius: 8px; 
+                color: white; font-weight: 600; z-index: 10000; animation: slideInRight 0.3s ease;
+                background: ${type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#17a2b8'};
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        // Arama İşlevi
+        document.getElementById('personnelSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = personnelTableBody.getElementsByTagName('tr');
+            
+            for (let row of rows) {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            }
+        });
+
+        // Çıkış butonu
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            localStorage.removeItem('loggedIn');
+            localStorage.removeItem('username');
+            window.location.href = 'login.html';
+        });
+
+        // Sayfa yüklendiğinde personelleri yükle
+        document.addEventListener('DOMContentLoaded', loadPersonnel);
+    </script>
+</body>
+</html>

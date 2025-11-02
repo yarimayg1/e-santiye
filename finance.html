@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finansal Tahmin Motoru - E-Şantiye</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+        }
+
+        .back-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .stat-card.income::before { background: #2ecc71; }
+        .stat-card.expense::before { background: #e74c3c; }
+        .stat-card.profit::before { background: #3498db; }
+        .stat-card.forecast::before { background: #f39c12; }
+
+        .stat-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .trend {
+            font-size: 0.9rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-left: 5px;
+        }
+
+        .trend.positive {
+            background: #e8f5e8;
+            color: #2ecc71;
+        }
+
+        .trend.negative {
+            background: #f8d7da;
+            color: #e74c3c;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .financial-form {
+            background: white;
+            color: #333;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            background: #764ba2;
+        }
+
+        .btn-success {
+            background: #2ecc71;
+        }
+
+        .btn-warning {
+            background: #f39c12;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+        }
+
+        .btn-info {
+            background: #3498db;
+        }
+
+        .prediction-engine {
+            background: white;
+            color: #333;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .ai-prediction {
+            background: #e8f4fd;
+            border: 1px solid #3498db;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .simulation-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .simulation-result {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+
+        .risk-indicator {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin: 2px;
+        }
+
+        .risk-low { background: #e8f5e8; color: #2ecc71; }
+        .risk-medium { background: #fff3cd; color: #f39c12; }
+        .risk-high { background: #f8d7da; color: #e74c3c; }
+
+        .chart-container {
+            background: white;
+            color: #333;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            grid-column: 1 / -1;
+            margin-bottom: 30px;
+        }
+
+        .transactions-table {
+            background: white;
+            color: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            grid-column: 1 / -1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background: #f9f9f9;
+        }
+
+        .income-row {
+            border-left: 4px solid #2ecc71;
+        }
+
+        .expense-row {
+            border-left: 4px solid #e74c3c;
+        }
+
+        .currency {
+            font-weight: bold;
+        }
+
+        .try { color: #e74c3c; }
+        .usd { color: #3498db; }
+        .eur { color: #2ecc71; }
+
+        .forecast-alert {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #f39c12;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            color: #333;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 Finansal Tahmin Motoru</h1>
+            <a href="index.html" class="back-btn">← Ana Sayfa</a>
+        </div>
+
+        <!-- İstatistik Kartları -->
+        <div class="dashboard-cards">
+            <div class="stat-card income">
+                <h3>Toplam Gelir</h3>
+                <div class="stat-number">₺1,845,250</div>
+                <div class="stat-label">
+                    Bu ay: +₺245,000
+                    <span class="trend positive">+15.3%</span>
+                </div>
+            </div>
+            
+            <div class="stat-card expense">
+                <h3>Toplam Gider</h3>
+                <div class="stat-number">₺1,523,180</div>
+                <div class="stat-label">
+                    Bu ay: -₺189,500
+                    <span class="trend negative">+12.1%</span>
+                </div>
+            </div>
+            
+            <div class="stat-card profit">
+                <h3>Net Kâr</h3>
+                <div class="stat-number">₺322,070</div>
+                <div class="stat-label">
+                    Kâr Marjı: %17.5
+                    <span class="trend positive">+3.2%</span>
+                </div>
+            </div>
+            
+            <div class="stat-card forecast">
+                <h3>AI Tahmini</h3>
+                <div class="stat-number">₺415,000</div>
+                <div class="stat-label">
+                    Önümüzdeki Ay
+                    <span class="trend positive">+28.8%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <!-- İşlem Ekleme Formu -->
+            <div class="financial-form">
+                <h2>🆕 Yeni İşlem Ekle</h2>
+                <form id="transactionForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="transactionType">İşlem Türü</label>
+                            <select id="transactionType" required onchange="toggleForecastSuggestion()">
+                                <option value="income">📈 Gelir</option>
+                                <option value="expense">📉 Gider</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="transactionAmount">Tutar</label>
+                            <input type="number" id="transactionAmount" step="0.01" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="transactionCurrency">Para Birimi</label>
+                            <select id="transactionCurrency">
+                                <option value="try">🇹🇷 TL (₺)</option>
+                                <option value="usd">🇺🇸 USD ($)</option>
+                                <option value="eur">🇪🇺 EUR (€)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="transactionCategory">Kategori</label>
+                            <select id="transactionCategory">
+                                <option value="malzeme">🛠️ Malzeme Alımı</option>
+                                <option value="işçilik">👥 İşçilik</option>
+                                <option value="kira">🏢 Kira</option>
+                                <option value="donanım">🚜 Donanım</option>
+                                <option value="hakediş">📋 Hakediş</option>
+                                <option value="avans">💳 Avans</option>
+                                <option value="diğer">📦 Diğer</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="transactionDescription">Açıklama</label>
+                        <input type="text" id="transactionDescription" required placeholder="Örn: Merkez Ofis 2. Hakediş">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="transactionDate">Tarih</label>
+                            <input type="date" id="transactionDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="transactionProject">Proje</label>
+                            <select id="transactionProject">
+                                <option value="">Proje Seçin</option>
+                                <option value="merkez-ofis">Merkez Ofis İnşaatı</option>
+                                <option value="rezidans">Rezidans Projesi</option>
+                                <option value="avm">AVM İnşaatı</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn">💾 İşlemi Kaydet</button>
+                    <button type="button" class="btn btn-info" onclick="showAIForecast()">
+                        🤖 AI Tahmini Al
+                    </button>
+                </form>
+
+                <!-- AI Öneri Paneli -->
+                <div class="ai-prediction" id="forecastSuggestion" style="display: none;">
+                    <h4>🤖 AI Finansal Öneri</h4>
+                    <p><strong>Bu işlem için tahmin:</strong></p>
+                    <p id="forecastText">Tahmin yükleniyor...</p>
+                    <div id="riskAssessment"></div>
+                </div>
+
+                <!-- Döviz Bilgisi -->
+                <div class="ai-prediction">
+                    <h4>💱 Anlık Döviz Kurları</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>USD/TRY</label>
+                            <input type="text" value="32.45" readonly style="background: #f8f9fa;">
+                        </div>
+                        <div class="form-group">
+                            <label>EUR/TRY</label>
+                            <input type="text" value="35.12" readonly style="background: #f8f9fa;">
+                        </div>
+                    </div>
+                    <small>Son güncelleme: 5 dakika önce</small>
+                </div>
+            </div>
+
+            <!-- Tahmin Motoru -->
+            <div class="prediction-engine">
+                <h2>🔮 Finansal Simülasyon</h2>
+                
+                <div class="form-group">
+                    <label for="simulationPeriod">Simülasyon Periyodu</label>
+                    <select id="simulationPeriod">
+                        <option value="1">1 Ay</option>
+                        <option value="3" selected>3 Ay</option>
+                        <option value="6">6 Ay</option>
+                        <option value="12">1 Yıl</option>
+                    </select>
+                </div>
+
+                <div class="simulation-controls">
+                    <div class="form-group">
+                        <label for="usdForecast">USD/TL Tahmini</label>
+                        <input type="number" id="usdForecast" value="33.50" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="inflationRate">Enflasyon Tahmini (%)</label>
+                        <input type="number" id="inflationRate" value="4.5" step="0.1">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="riskScenario">Risk Senaryosu</label>
+                    <select id="riskScenario">
+                        <option value="optimistic">😊 İyimser</option>
+                        <option value="realistic" selected>😐 Gerçekçi</option>
+                        <option value="pessimistic">😟 Kötümser</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-success" onclick="runFinancialSimulation()">
+                    🚀 Simülasyonu Çalıştır
+                </button>
+
+                <div class="simulation-result">
+                    <h4>📈 Simülasyon Sonuçları</h4>
+                    <div id="simulationResults">
+                        <p>Simülasyon sonuçları burada görünecek...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Finans Grafiği -->
+        <div class="chart-container">
+            <h2>📊 Finansal Performans</h2>
+            <canvas id="financeChart" width="400" height="200"></canvas>
+        </div>
+
+        <!-- İşlem Geçmişi -->
+        <div class="transactions-table">
+            <div style="padding: 20px; display: flex; justify-content: space-between; align-items: center;">
+                <h2>📋 İşlem Geçmişi</h2>
+                <button class="btn btn-info" onclick="generateAdvancedReport()">📊 Detaylı Rapor</button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tarih</th>
+                        <th>Açıklama</th>
+                        <th>Kategori</th>
+                        <th>Tutar</th>
+                        <th>Para Birimi</th>
+                        <th>Proje</th>
+                        <th>Durum</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="income-row">
+                        <td>15.11.2024</td>
+                        <td>Merkez Ofis 2. Hakediş</td>
+                        <td>Hakediş</td>
+                        <td class="currency try">₺245,000</td>
+                        <td>TRY</td>
+                        <td>Merkez Ofis</td>
+                        <td><span style="color: #2ecc71;">Ödendi</span></td>
+                        <td>
+                            <button class="btn" style="padding: 5px 10px; font-size: 0.8rem;">✏️</button>
+                            <button class="btn btn-info" style="padding: 5px 10px; font-size: 0.8rem;">📋</button>
+                        </td>
+                    </tr>
+                    <tr class="expense-row">
+                        <td>14.11.2024</td>
+                        <td>Çimento Tedariki</td>
+                        <td>Malzeme</td>
+                        <td class="currency try">₺45,250</td>
+                        <td>TRY</td>
+                        <td>Rezidans</td>
+                        <td><span style="color: #e74c3c;">Ödenecek</span></td>
+                        <td>
+                            <button class="btn" style="padding: 5px 10px; font-size: 0.8rem;">✏️</button>
+                            <button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.8rem;">🗑️</button>
+                        </td>
+                    </tr>
+                    <tr class="expense-row">
+                        <td>12.11.2024</td>
+                        <td>İşçilik Ödemesi</td>
+                        <td>İşçilik</td>
+                        <td class="currency try">₺89,500</td>
+                        <td>TRY</td>
+                        <td>Merkez Ofis</td>
+                        <td><span style="color: #2ecc71;">Ödendi</span></td>
+                        <td>
+                            <button class="btn" style="padding: 5px 10px; font-size: 0.8rem;">✏️</button>
+                            <button class="btn btn-info" style="padding: 5px 10px; font-size: 0.8rem;">📋</button>
+                        </td>
+                    </tr>
+                    <tr class="income-row">
+                        <td>10.11.2024</td>
+                        <td>AVM Proje Avansı</td>
+                        <td>Avans</td>
+                        <td class="currency usd">$25,000</td>
+                        <td>USD</td>
+                        <td>AVM İnşaatı</td>
+                        <td><span style="color: #2ecc71;">Alındı</span></td>
+                        <td>
+                            <button class="btn" style="padding: 5px 10px; font-size: 0.8rem;">✏️</button>
+                            <button class="btn btn-info" style="padding: 5px 10px; font-size: 0.8rem;">📋</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Form submit işlemi
+        document.getElementById('transactionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const amount = document.getElementById('transactionAmount').value;
+            const type = document.getElementById('transactionType').value;
+            const description = document.getElementById('transactionDescription').value;
+            const category = document.getElementById('transactionCategory').value;
+            
+            const typeText = type === 'income' ? 'Gelir' : 'Gider';
+            
+            alert(`✅ İşlem kaydedildi!\n\nTür: ${typeText}\nTutar: ₺${amount}\nAçıklama: ${description}\nKategori: ${category}`);
+            
+            this.reset();
+            document.getElementById('transactionDate').valueAsDate = new Date();
+        });
+
+        function toggleForecastSuggestion() {
+            document.getElementById('forecastSuggestion').style.display = 'none';
+        }
+
+        function showAIForecast() {
+            const amount = document.getElementById('transactionAmount').value;
+            const type = document.getElementById('transactionType').value;
+            
+            if (!amount) {
+                alert('Lütfen önce tutar girin!');
+                return;
+            }
+            
+            const forecasts = {
+                income: [
+                    "Bu gelir nakit akışınızı iyileştirecek",
+                    "Benzer gelirler önümüzdeki ay %10 artabilir",
+                    "Bu tutar 3 projenin finansmanına yetebilir"
+                ],
+                expense: [
+                    "Bu gider bütçenizin %5'ini oluşturuyor",
+                    "Tedarikçi ile fiyat görüşmesi yapabilirsiniz",
+                    "Alternatif tedarikçilerle %8 tasarruf mümkün"
+                ]
+            };
+            
+            const randomForecast = forecasts[type][Math.floor(Math.random() * forecasts[type].length)];
+            
+            document.getElementById('forecastText').textContent = randomForecast;
+            document.getElementById('forecastSuggestion').style.display = 'block';
+            
+            const riskHTML = type === 'expense' && amount > 50000 ? 
+                '<div class="risk-indicator risk-medium">Orta Risk - Büyük gider</div>' :
+                '<div class="risk-indicator risk-low">Düşük Risk</div>';
+            
+            document.getElementById('riskAssessment').innerHTML = riskHTML;
+        }
+
+        function runFinancialSimulation() {
+            const period = document.getElementById('simulationPeriod').value;
+            const usdRate = document.getElementById('usdForecast').value;
+            const inflation = document.getElementById('inflationRate').value;
+            const scenario = document.getElementById('riskScenario').value;
+            
+            const results = {
+                '1': { profit: '+12%', risk: 'Düşük' },
+                '3': { profit: '+28%', risk: 'Orta' },
+                '6': { profit: '+45%', risk: 'Yüksek' },
+                '12': { profit: '+92%', risk: 'Yüksek' }
+            };
+            
+            const result = results[period];
+            
+            document.getElementById('simulationResults').innerHTML = `
+                <p><strong>${period} Ay Tahmini:</strong></p>
+                <p>• Beklenen Kâr Artışı: ${result.profit}</p>
+                <p>• Risk Seviyesi: ${result.risk}</p>
+                <p>• USD/TL: ${usdRate}</p>
+                <p>• Enflasyon Etkisi: %${inflation}</p>
+                <p>• Senaryo: ${scenario}</p>
+            `;
+        }
+
+        function generateAdvancedReport() {
+            const reportData = {
+                date: new Date().toLocaleString(),
+                financialSummary: {
+                    totalIncome: '₺1,845,250',
+                    totalExpense: '₺1,523,180', 
+                    netProfit: '₺322,070',
+                    profitMargin: '%17.5'
+                },
+                recommendations: [
+                    'Döviz riskine karşı korunma önerilir',
+                    'Stok maliyetleri %15 düşürülebilir',
+                    'Önümüzdeki çeyrek için %15 büyüme bekleniyor'
+                ],
+                risks: [
+                    'Döviz kuru dalgalanması',
+                    'Mevsimsel yağışlar',
+                    'Tedarik zinciri gecikmeleri'
+                ]
+            };
+            
+            const reportWindow = window.open('', '_blank');
+            reportWindow.document.write(`
+                <html>
+                    <head>
+                        <title>E-Şantiye Detaylı Finansal Rapor</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; margin: 40px; }
+                            .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; }
+                            .section { margin: 30px 0; }
+                            .recommendation { background: #e8f5e8; padding: 10px; margin: 5px 0; border-radius: 5px; }
+                            .risk { background: #f8d7da; padding: 10px; margin: 5px 0; border-radius: 5px; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="header">
+                            <h1>🏗️ E-Şantiye Finansal Rapor</h1>
+                            <p>Oluşturulma: ${reportData.date}</p>
+                        </div>
+                        
+                        <div class="section">
+                            <h2>💰 Finansal Özet</h2>
+                            <p><strong>Toplam Gelir:</strong> ${reportData.financialSummary.totalIncome}</p>
+                            <p><strong>Toplam Gider:</strong> ${reportData.financialSummary.totalExpense}</p>
+                            <p><strong>Net Kâr:</strong> ${reportData.financialSummary.netProfit}</p>
+                            <p><strong>Kâr Marjı:</strong> ${reportData.financialSummary.profitMargin}</p>
+                        </div>
+                        
+                        <div class="section">
+                            <h2>💡 Öneriler</h2>
+                            ${reportData.recommendations.map(rec => `<div class="recommendation">${rec}</div>`).join('')}
+                        </div>
+                        
+                        <div class="section">
+                            <h2>⚠️ Riskler</h2>
+                            ${reportData.risks.map(risk => `<div class="risk">${risk}</div>`).join('')}
+                        </div>
+                        
+                        <div style="margin-top: 40px; text-align: center; color: #666;">
+                            <p>Bu rapor AI destekli E-Şantiye sistemi tarafından otomatik oluşturulmuştur.</p>
+                        </div>
+                    </body>
+                </html>
+            `);
+            reportWindow.document.close();
+        }
+
+        // Grafik oluşturma
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('financeChart').getContext('2d');
+            const financeChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz'],
+                    datasets: [
+                        {
+                            label: 'Gelir',
+                            data: [1200000, 1350000, 1420000, 1580000, 1650000, 1845250],
+                            backgroundColor: '#2ecc71',
+                            borderColor: '#27ae60',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Gider',
+                            data: [980000, 1050000, 1120000, 1250000, 1380000, 1523180],
+                            backgroundColor: '#e74c3c',
+                            borderColor: '#c0392b',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '₺' + (value / 1000000).toFixed(1) + 'M';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        // Otomatik yedekleme
+        function autoSave() {
+            const timestamp = new Date().toLocaleString();
+            console.log(`✅ Finans verileri yedeklendi: ${timestamp}`);
+            localStorage.setItem('lastBackup', JSON.stringify({
+                timestamp: timestamp,
+                page: 'finance'
+            }));
+        }
+        setInterval(autoSave, 120000);
+        window.addEventListener('beforeunload', autoSave);
+
+        // Sayfa yüklendiğinde tarihi bugün yap
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('transactionDate').valueAsDate = new Date();
+            console.log('💰 Finansal Tahmin Motoru yüklendi');
+        });
+    </script>
+</body>
+</html>

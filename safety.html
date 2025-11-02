@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İş Güvenliği - E-Şantiye</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🏗️ E-ŞANTİYE</h1>
+            <nav class="navbar">
+                <a href="index.html"><i class="fas fa-home"></i> Ana Sayfa</a>
+                <a href="projects.html"><i class="fas fa-project-diagram"></i> Proje Yönetimi</a>
+                <a href="materials.html"><i class="fas fa-boxes"></i> Malzeme Yönetimi</a>
+                <a href="personnel.html"><i class="fas fa-users"></i> Personel Yönetimi</a>
+                <a href="safety.html" class="active"><i class="fas fa-shield-alt"></i> İş Güvenliği</a>
+                <a href="ai-assistant.html"><i class="fas fa-robot"></i> AI Asistan</a>
+                <a href="#" id="logoutBtn" style="margin-left: auto;"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <div class="page-header">
+                <div class="header-content">
+                    <h2><i class="fas fa-shield-alt"></i> İş Sağlığı & Güvenliği</h2>
+                    <p>Güvenlik talimatları, acil durum prosedürleri ve eğitim programları</p>
+                </div>
+                <button class="btn btn-warning" id="reportIncidentBtn">
+                    <i class="fas fa-exclamation-triangle"></i> Olay Bildir
+                </button>
+            </div>
+            
+            <!-- Acil Durum Bilgileri -->
+            <div class="safety-alert">
+                <div class="alert-header">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <h3>Acil Durum Bilgileri</h3>
+                </div>
+                <div class="alert-content">
+                    <div class="emergency-info">
+                        <div class="info-item">
+                            <strong><i class="fas fa-phone"></i> Acil Durum Numarası</strong>
+                            <span>112</span>
+                        </div>
+                        <div class="info-item">
+                            <strong><i class="fas fa-user-shield"></i> İş Güvenliği Uzmanı</strong>
+                            <span>Ahmet Şen - Dahili: 1250</span>
+                        </div>
+                        <div class="info-item">
+                            <strong><i class="fas fa-first-aid"></i> İlk Yardım Odası</strong>
+                            <span>2. Kat, Oda 201</span>
+                        </div>
+                        <div class="info-item">
+                            <strong><i class="fas fa-map-marker-alt"></i> Toplanma Alanı</strong>
+                            <span>Bina Önü Park Alanı</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Güvenlik Kartları -->
+            <div class="safety-grid">
+                <div class="safety-card">
+                    <div class="safety-icon">
+                        <i class="fas fa-hard-hat"></i>
+                    </div>
+                    <h3>Güvenlik Talimatları</h3>
+                    <ul>
+                        <li><i class="fas fa-ban"></i> Ofis alanlarında koşmayın</li>
+                        <li><i class="fas fa-plug"></i> Elektrik kablolarını düzenli tutun</li>
+                        <li><i class="fas fa-door-open"></i> Yangın çıkışlarını kapatmayın</li>
+                        <li><i class="fas fa-map"></i> Acil durum toplanma alanlarını öğrenin</li>
+                        <li><i class="fas fa-vest"></i> Kişisel koruyucu ekipman kullanın</li>
+                    </ul>
+                </div>
+
+                <div class="safety-card">
+                    <div class="safety-icon medical">
+                        <i class="fas fa-first-aid"></i>
+                    </div>
+                    <h3>İlk Yardım Talimatları</h3>
+                    <ul>
+                        <li><i class="fas fa-tint"></i> Kanamalarda temiz gazlı bez ile baskı uygulayın</li>
+                        <li><i class="fas fa-fire"></i> Yanıkları 15-20 dakika soğuk suda tutun</li>
+                        <li><i class="fas fa-procedures"></i> Bilinç kaybında hastayı yan çevirin</li>
+                        <li><i class="fas fa-phone"></i> Hemen 112'yi arayın ve İSG uzmanına haber verin</li>
+                        <li><i class="fas fa-first-aid"></i> İlk yardım dolabı yerini öğrenin</li>
+                    </ul>
+                </div>
+
+                <div class="safety-card">
+                    <div class="safety-icon fire">
+                        <i class="fas fa-fire-extinguisher"></i>
+                    </div>
+                    <h3>Yangın Talimatları</h3>
+                    <ul>
+                        <li><i class="fas fa-fire-extinguisher"></i> Yangın tüpü kullanımını öğrenin</li>
+                        <li><i class="fas fa-smog"></i> Duman altında eğilerek ilerleyin</li>
+                        <li><i class="fas fa-elevator"></i> Asansör kullanmayın</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Toplanma alanına gidin</li>
+                        <li><i class="fas fa-bell"></i> Yangın ihbar düğmesi yerlerini bilin</li>
+                    </ul>
+                </div>
+
+                <div class="safety-card">
+                    <div class="safety-icon training">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3>Eğitim Programı</h3>
+                    <ul>
+                        <li><i class="fas fa-calendar-day"></i> İlk Yardım Eğitimi: Her ayın ilk Pazartesi</li>
+                        <li><i class="fas fa-calendar-week"></i> Yangın Tatbikatı: Üç ayda bir</li>
+                        <li><i class="fas fa-calendar-alt"></i> Güvenlik Semineri: Her çarşamba</li>
+                        <li><i class="fas fa-calendar-check"></i> İSG Mevzuat Eğitimi: Yılda 2 kez</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Dokümanlar ve Formlar -->
+            <div class="documents-section">
+                <h3><i class="fas fa-file-download"></i> İndirilebilir Dokümanlar</h3>
+                <div class="document-list">
+                    <div class="doc-item">
+                        <div class="doc-icon">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <div class="doc-content">
+                            <strong>İSG Talimatları</strong>
+                            <span>Son güncelleme: 01.01.2024</span>
+                        </div>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-download"></i> İndir
+                        </button>
+                    </div>
+                    <div class="doc-item">
+                        <div class="doc-icon">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <div class="doc-content">
+                            <strong>Acil Durum Planı</strong>
+                            <span>Son güncelleme: 15.12.2023</span>
+                        </div>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-download"></i> İndir
+                        </button>
+                    </div>
+                    <div class="doc-item">
+                        <div class="doc-icon">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <div class="doc-content">
+                            <strong>İlk Yardım Rehberi</strong>
+                            <span>Son güncelleme: 20.11.2023</span>
+                        </div>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-download"></i> İndir
+                        </button>
+                    </div>
+                    <div class="doc-item">
+                        <div class="doc-icon">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <div class="doc-content">
+                            <strong>Yangın Talimatları</strong>
+                            <span>Son güncelleme: 05.01.2024</span>
+                        </div>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-download"></i> İndir
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- İSG Formları -->
+            <div class="forms-section">
+                <h3><i class="fas fa-clipboard-list"></i> İSG Formları</h3>
+                <div class="forms-grid">
+                    <button class="form-card" onclick="openForm('risk')">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Risk Değerlendirme Formu</span>
+                    </button>
+                    <button class="form-card" onclick="openForm('accident')">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>İş Kazası Bildirim Formu</span>
+                    </button>
+                    <button class="form-card" onclick="openForm('training')">
+                        <i class="fas fa-user-graduate"></i>
+                        <span>Eğitim Katılım Formu</span>
+                    </button>
+                    <button class="form-card" onclick="openForm('inspection')">
+                        <i class="fas fa-clipboard-check"></i>
+                        <span>Güvenlik Denetim Formu</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- İstatistikler -->
+            <div class="safety-stats">
+                <h3><i class="fas fa-chart-bar"></i> Güvenlik İstatistikleri</h3>
+                <div class="stats-grid">
+                    <div class="stat-card positive">
+                        <i class="fas fa-calendar-check"></i>
+                        <div class="stat-content">
+                            <div class="stat-number">287</div>
+                            <div class="stat-label">Kazasız Gün</div>
+                        </div>
+                    </div>
+                    <div class="stat-card warning">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <div class="stat-content">
+                            <div class="stat-number">12</div>
+                            <div class="stat-label">Bu Ay Risk Bildirimi</div>
+                        </div>
+                    </div>
+                    <div class="stat-card info">
+                        <i class="fas fa-user-graduate"></i>
+                        <div class="stat-content">
+                            <div class="stat-number">94%</div>
+                            <div class="stat-label">Eğitim Tamamlama</div>
+                        </div>
+                    </div>
+                    <div class="stat-card success">
+                        <i class="fas fa-clipboard-check"></i>
+                        <div class="stat-content">
+                            <div class="stat-number">98%</div>
+                            <div class="stat-label">Güvenlik Uyumu</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 E-Şantiye İnşaat Yönetim Sistemi. Tüm hakları saklıdır.</p>
+        </footer>
+    </div>
+
+    <!-- Olay Bildirim Modal -->
+    <div id="incidentModal" class="modal">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-exclamation-triangle"></i> Olay Bildirimi</h3>
+                <button class="close">&times;</button>
+            </div>
+            <form id="incidentForm">
+                <div class="form-group">
+                    <label for="incidentType"><i class="fas fa-tag"></i> Olay Türü</label>
+                    <select id="incidentType" class="form-control" required>
+                        <option value="">Seçiniz</option>
+                        <option value="kaza">İş Kazası</option>
+                        <option value="risk">Risk Bildirimi</option>
+                        <option value="yangin">Yangın Tehlikesi</option>
+                        <option value="saglik">Sağlık Sorunu</option>
+                        <option value="diger">Diğer</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="incidentLocation"><i class="fas fa-map-marker-alt"></i> Olay Yeri</label>
+                    <input type="text" id="incidentLocation" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="incidentDate"><i class="fas fa-calendar-alt"></i> Olay Tarihi</label>
+                    <input type="datetime-local" id="incidentDate" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="incidentDescription"><i class="fas fa-file-alt"></i> Olay Açıklaması</label>
+                    <textarea id="incidentDescription" class="form-control" rows="4" placeholder="Olayı detaylı şekilde açıklayın..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="incidentSeverity"><i class="fas fa-exclamation-circle"></i> Önem Derecesi</label>
+                    <select id="incidentSeverity" class="form-control" required>
+                        <option value="dusuk">Düşük</option>
+                        <option value="orta">Orta</option>
+                        <option value="yuksek">Yüksek</option>
+                        <option value="kritik">Kritik</option>
+                    </select>
+                </div>
+
+                <div class="action-buttons">
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fas fa-paper-plane"></i> Bildirimi Gönder
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="cancelIncidentBtn">
+                        <i class="fas fa-times"></i> İptal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        .safety-alert {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border: 2px solid #ffc107;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);
+        }
+
+        .alert-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .alert-header i {
+            font-size: 2rem;
+            color: #ffc107;
+        }
+
+        .alert-header h3 {
+            margin: 0;
+            color: #856404;
+        }
+
+        .emergency-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 10px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .info-item strong {
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-item span {
+            color: #666;
+            font-weight: 600;
+        }
+
+        .safety-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .safety-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border-top: 4px solid #667eea;
+        }
+
+        .safety-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .safety-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .safety-icon.medical {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .safety-icon.fire {
+            background: linear-gradient(135deg, #dc3545, #e83e8c);
+        }
+
+        .safety-icon.training {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+        }
+
+        .safety-card h3 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .safety-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .safety-card li {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            color: #555;
+        }
+
+        .safety-card li:last-child {
+            border-bottom: none;
+        }
+
+        .safety-card li i {
+            color: #667eea;
+            margin-top: 0.2rem;
+            flex-shrink: 0;
+        }
+
+        .documents-section, .forms-section, .safety-stats {
+            margin: 3rem 0;
+        }
+
+        .documents-section h3, .forms-section h3, .safety-stats h3 {
+            margin-bottom: 1.5rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .document-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .doc-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .doc-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .doc-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #dc3545;
+        }
+
+        .doc-content {
+            flex: 1;
+        }
+
+        .doc-content strong {
+            display: block;
+            margin-bottom: 0.3rem;
+            color: #333;
+        }
+
+        .doc-content span {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .forms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-card {
+            background: white;
+            border: 2px dashed #e9ecef;
+            border-radius: 12px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .form-card:hover {
+            border-color: #667eea;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .form-card i {
+            font-size: 2.5rem;
+            color: #667eea;
+        }
+
+        .form-card span {
+            font-weight: 600;
+            text-align: center;
+            color: #333;
+        }
+
+        .safety-stats .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .stat-card.positive { border-left: 4px solid #28a745; }
+        .stat-card.warning { border-left: 4px solid #ffc107; }
+        .stat-card.info { border-left: 4px solid #17a2b8; }
+        .stat-card.success { border-left: 4px solid #20c997; }
+
+        .stat-card i {
+            font-size: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-card.positive i { background: #d4edda; color: #28a745; }
+        .stat-card.warning i { background: #fff3cd; color: #ffc107; }
+        .stat-card.info i { background: #d1ecf1; color: #17a2b8; }
+        .stat-card.success i { background: #d4edda; color: #20c997; }
+
+        .stat-content {
+            flex: 1;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            line-height: 1;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
+        }
+
+        .text-muted {
+            color: #6c757d !important;
+        }
+    </style>
+
+    <script>
+        // Kullanıcı kontrolü
+        if (localStorage.getItem('loggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+
+        const incidentModal = document.getElementById('incidentModal');
+        const incidentForm = document.getElementById('incidentForm');
+
+        // Olay bildirim modalı
+        document.getElementById('reportIncidentBtn').addEventListener('click', () => {
+            incidentModal.style.display = 'block';
+            document.getElementById('incidentDate').value = new Date().toISOString().slice(0, 16);
+        });
+
+        document.querySelector('#incidentModal .close').addEventListener('click', () => {
+            incidentModal.style.display = 'none';
+        });
+
+        document.getElementById('cancelIncidentBtn').addEventListener('click', () => {
+            incidentModal.style.display = 'none';
+        });
+
+        // Form açma fonksiyonları
+        function openForm(formType) {
+            const formTitles = {
+                'risk': 'Risk Değerlendirme Formu',
+                'accident': 'İş Kazası Bildirim Formu', 
+                'training': 'Eğitim Katılım Formu',
+                'inspection': 'Güvenlik Denetim Formu'
+            };
+            
+            alert(`${formTitles[formType]} açılıyor...\n\nBu özellik aktif geliştirme aşamasındadır.`);
+        }
+
+        // Olay bildirim formu
+        incidentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const incidentData = {
+                type: document.getElementById('incidentType').value,
+                location: document.getElementById('incidentLocation').value,
+                date: document.getElementById('incidentDate').value,
+                description: document.getElementById('incidentDescription').value,
+                severity: document.getElementById('incidentSeverity').value,
+                reportedBy: localStorage.getItem('username') || 'Anonim',
+                timestamp: new Date().toISOString()
+            };
+            
+            // Bildirimi kaydet (localStorage'a)
+            let incidents = JSON.parse(localStorage.getItem('safetyIncidents')) || [];
+            incidents.push({
+                id: Date.now(),
+                ...incidentData
+            });
+            localStorage.setItem('safetyIncidents', JSON.stringify(incidents));
+            
+            incidentModal.style.display = 'none';
+            incidentForm.reset();
+            
+            // Başarı mesajı göster
+            showNotification('Olay bildiriminiz başarıyla gönderildi!', 'success');
+            
+            // Acil durumda hemen aksiyon al
+            if (incidentData.severity === 'kritik') {
+                setTimeout(() => {
+                    if (confirm('KRİTİK OLAY BİLDİRİMİ!\n\nİş Güvenliği uzmanını aramak ister misiniz?')) {
+                        alert('İş Güvenliği Uzmanı aranıyor...\nTelefon: 1250');
+                    }
+                }, 1000);
+            }
+        });
+
+        // Çıkış butonu
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            localStorage.removeItem('loggedIn');
+            localStorage.removeItem('username');
+            window.location.href = 'login.html';
+        });
+
+        // Bildirim fonksiyonu
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 600;
+                z-index: 10000;
+                animation: slideInRight 0.3s ease;
+                background: ${type === 'success' ? '#28a745' : type === 'warning' ? '#ffc107' : type === 'error' ? '#dc3545' : '#17a2b8'};
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+
+        // Acil durum butonlarına tıklama
+        document.querySelectorAll('.emergency-info .info-item').forEach(item => {
+            item.style.cursor = 'pointer';
+            item.addEventListener('click', function() {
+                const text = this.querySelector('span').textContent;
+                if (text === '112') {
+                    if (confirm('112 Acil Servis aransın mı?')) {
+                        alert('112 aranıyor... Lütfen telefonunuzdan arama yapın.');
+                    }
+                } else if (text.includes('1250')) {
+                    if (confirm('İş Güvenliği Uzmanı aransın mı?')) {
+                        alert('İş Güvenliği Uzmanı aranıyor... (Dahili: 1250)');
+                    }
+                }
+            });
+        });
+    </script>
+
+    <style>
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .emergency-info .info-item {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .emergency-info .info-item:hover {
+            background: #fff8e1;
+            transform: translateX(5px);
+        }
+    </style>
+</body>
+</html>
